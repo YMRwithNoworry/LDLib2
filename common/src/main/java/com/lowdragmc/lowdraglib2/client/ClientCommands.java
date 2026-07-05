@@ -31,6 +31,8 @@ public class ClientCommands {
                     ShaderManager.getInstance().reload();
                     return 1;
                 })));
+        commands.add(createLiteral("ldlib2_ui_editor")
+                .executes(context -> ClientEditorCommands.openUIEditor()));
         return commands;
     }
 }

@@ -4,11 +4,14 @@ import com.lowdragmc.lowdraglib2.CommonListeners;
 import com.lowdragmc.lowdraglib2.CommonProxy;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.Platform;
+import com.lowdragmc.lowdraglib2.client.ClientCommands;
 import com.lowdragmc.lowdraglib2.client.ClientProxy;
 import com.lowdragmc.lowdraglib2.forge.client.ForgeLDLRendererModel;
 import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -32,6 +35,7 @@ public final class LDLib2Forge {
         new ClientProxy(eventBus);
         eventBus.addListener(LDLib2Forge::clientSetup);
         eventBus.addListener(LDLib2Forge::registerGeometryLoaders);
+        MinecraftForge.EVENT_BUS.addListener(LDLib2Forge::registerClientCommands);
     }
 
     private static void clientSetup(FMLClientSetupEvent event) {
@@ -40,5 +44,9 @@ public final class LDLib2Forge {
 
     private static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register("renderer", ForgeLDLRendererModel.Loader.INSTANCE);
+    }
+
+    private static void registerClientCommands(RegisterClientCommandsEvent event) {
+        ClientCommands.createClientCommands().forEach(event.getDispatcher()::register);
     }
 }

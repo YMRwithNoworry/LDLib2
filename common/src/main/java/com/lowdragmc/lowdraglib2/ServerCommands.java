@@ -66,17 +66,26 @@ public class ServerCommands {
 											return 1;
 										}))),
                 Commands.literal("ldlib2_ui_editor").requires(s -> s.getServer().isSingleplayer())
-                        .executes(context -> {
-                    if (!context.getSource().getServer().isSingleplayer()) {
-                        context.getSource().sendFailure(Component.literal("This command can only be used in singleplayer"));
-                        return 0;
-                    }
-                    if (context.getSource().getPlayer() == null) return 0;
-                    PlayerUIMenuType.openUI(context.getSource().getPlayer(), UIEditor.WINDOW_ID);
-                    return 1;
-                })
+                        .executes(context -> openUIEditor(context.getSource()))
         ));
         return commands;
 	}
+
+    public static int openUIEditor(CommandSourceStack source) {
+        if (!source.getServer().isSingleplayer()) {
+            source.sendFailure(Component.literal("This command can only be used in singleplayer"));
+            return 0;
+        }
+        var player = source.getPlayer();
+        if (player == null) {
+            source.sendFailure(Component.literal("This command can only be used by a player"));
+            return 0;
+        }
+        if (!PlayerUIMenuType.openUI(player, UIEditor.WINDOW_ID)) {
+            source.sendFailure(Component.literal("Failed to open LDLib2 UI editor: player UI holder is not registered"));
+            return 0;
+        }
+        return 1;
+    }
 
 }
