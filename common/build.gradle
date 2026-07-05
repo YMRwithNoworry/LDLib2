@@ -1,0 +1,50 @@
+architectury {
+    common rootProject.enabled_platforms.split(",")
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/ldlib2.accesswidener")
+}
+
+sourceSets {
+    main {
+        kotlin.srcDir("src/main/java")
+        java {
+            exclude "com/lowdragmc/lowdraglib2/test/**"
+            exclude "com/lowdragmc/lowdraglib2/integration/kjs/ui/**"
+            exclude "com/lowdragmc/lowdraglib2/integration/kjs/LDLibKubeJSPlugin.java"
+            exclude "com/lowdragmc/lowdraglib2/integration/xei/emi/**"
+            exclude "com/lowdragmc/lowdraglib2/integration/xei/jei/**"
+            exclude "com/lowdragmc/lowdraglib2/integration/xei/rei/**"
+            exclude "com/lowdragmc/lowdraglib2/client/utils/MeshDataSorter.java"
+            exclude "com/lowdragmc/lowdraglib2/client/utils/MeshDataSortResult.java"
+            exclude "com/lowdragmc/lowdraglib2/core/mixins/accessor/MeshDataAccessor.java"
+            exclude "com/lowdragmc/lowdraglib2/core/mixins/emi/**"
+            exclude "com/lowdragmc/lowdraglib2/core/mixins/kjs/ServerScriptManagerAccessor.java"
+            exclude "com/lowdragmc/lowdraglib2/core/mixins/BlockStateModelLoaderMixin.java"
+            exclude "com/lowdragmc/lowdraglib2/core/mixins/SpriteSourceListMixin.java"
+        }
+    }
+}
+
+configurations {
+    libraries
+    api.extendsFrom libraries
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "dev.architectury:architectury:${rootProject.architectury_api_version}"
+
+    compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}") { transitive = false }
+    compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-common:${rootProject.jei_version}") { transitive = false }
+    compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-core:${rootProject.jei_version}") { transitive = false }
+    compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-gui:${rootProject.jei_version}") { transitive = false }
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${rootProject.rei_version}")
+    modCompileOnly("dev.emi:emi-xplat-intermediary:${rootProject.emi_version}")
+
+    libraries "org.appliedenergistics.yoga:yoga:${rootProject.yoga_version}"
+    libraries "dev.vfyjxf:taffy:${rootProject.taffy_version}"
+
+    compileOnly "net.minecraftforge:forge:${rootProject.forge_version}"
+}
