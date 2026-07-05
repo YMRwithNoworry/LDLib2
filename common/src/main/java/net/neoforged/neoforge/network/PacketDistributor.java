@@ -1,6 +1,6 @@
 package net.neoforged.neoforge.network;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.lowdragmc.lowdraglib2.compat.network.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;

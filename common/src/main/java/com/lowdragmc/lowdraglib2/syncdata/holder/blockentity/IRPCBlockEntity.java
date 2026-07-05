@@ -4,7 +4,7 @@ import com.lowdragmc.lowdraglib2.networking.both.PacketRPCBlockEntity;
 import com.lowdragmc.lowdraglib2.syncdata.IManaged;
 import com.lowdragmc.lowdraglib2.syncdata.holder.IRPCManagedHolder;
 import com.lowdragmc.lowdraglib2.syncdata.rpc.RPCMethodMeta;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.lowdragmc.lowdraglib2.compat.network.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.api.distmarker.Dist;

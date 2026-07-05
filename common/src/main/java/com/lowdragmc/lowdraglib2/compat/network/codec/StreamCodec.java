@@ -1,4 +1,4 @@
-package net.minecraft.network.codec;
+package com.lowdragmc.lowdraglib2.compat.network.codec;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;

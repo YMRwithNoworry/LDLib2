@@ -9,7 +9,7 @@ import com.lowdragmc.lowdraglib2.networking.both.PacketUIRPCEventReturn;
 import com.lowdragmc.lowdraglib2.utils.ByteBufUtil;
 import com.lowdragmc.lowdraglib2.utils.IdentityMap;
 import lombok.Getter;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.lang3.function.Consumers;

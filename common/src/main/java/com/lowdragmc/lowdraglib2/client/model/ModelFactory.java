@@ -115,7 +115,7 @@ public class ModelFactory {
                 return ((ModelBakeryAccessor) modelBakery).invokeGetModel(modelLocation);
             }
         } catch (Throwable ignored) {
-            return ((ModelBakeryAccessor) modelBakery).getMissingModel();
+            return getMissingModel((ModelBakeryAccessor) modelBakery);
         }
     }
 
@@ -148,7 +148,7 @@ public class ModelFactory {
                 model.resolveParents(accessor::invokeGetModel);
                 return model;
             } catch (Throwable ignored) {
-                return accessor.getMissingModel();
+                return getMissingModel(accessor);
             }
         }
     }
@@ -160,8 +160,16 @@ public class ModelFactory {
                 return ((ModelBakeryAccessor) modelBakery).getUnbakedCache().get(modelLocation);
             }
         } catch (Throwable ignored) {
-            return ((ModelBakeryAccessor) modelBakery).getMissingModel();
+            return getMissingModel((ModelBakeryAccessor) modelBakery);
         }
+    }
+
+    private static UnbakedModel getMissingModel(ModelBakeryAccessor accessor) {
+        var missing = accessor.getUnbakedCache().get(ModelBakery.MISSING_MODEL_LOCATION);
+        if (missing != null) {
+            return missing;
+        }
+        return accessor.getTopLevelModels().get(ModelBakery.MISSING_MODEL_LOCATION);
     }
 
     public static Quaternionf getQuaternion(Direction facing) {

@@ -14,7 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.lowdragmc.lowdraglib2.compat.network.CustomPacketPayload;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.BitSet;

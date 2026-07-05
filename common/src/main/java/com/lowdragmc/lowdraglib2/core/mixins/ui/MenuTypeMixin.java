@@ -2,11 +2,13 @@ package com.lowdragmc.lowdraglib2.core.mixins.ui;
 
 import com.lowdragmc.lowdraglib2.gui.event.ContainerMenuEvent;
 import com.lowdragmc.lowdraglib2.gui.holder.IModularUIHolder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,13 +33,15 @@ public abstract class MenuTypeMixin<T extends AbstractContainerMenu> {
     }
 
 
-    @Inject(method = "create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/RegistryFriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;",
+    @Inject(method = "create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;",
             at = @At(value = "RETURN"))
-    private void ldlib2$create2$return(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf extraData, CallbackInfoReturnable<T> cir) {
+    private void ldlib2$create2$return(int containerId, Inventory playerInventory, FriendlyByteBuf extraData, CallbackInfoReturnable<T> cir) {
         var menu = cir.getReturnValue();
         NeoForge.EVENT_BUS.post(new ContainerMenuEvent.Create(playerInventory.player, menu));
         if (menu instanceof IModularUIHolder holder) {
-            holder.readInitialData(extraData);
+            var registryBuf = extraData instanceof RegistryFriendlyByteBuf buf ? buf :
+                    new RegistryFriendlyByteBuf(extraData, playerInventory.player.level().registryAccess(), ConnectionType.NEOFORGE);
+            holder.readInitialData(registryBuf);
         }
     }
 }

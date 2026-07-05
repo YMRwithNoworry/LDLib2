@@ -3,7 +3,7 @@ package com.lowdragmc.lowdraglib2.integration.kjs.ui;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerMenu;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

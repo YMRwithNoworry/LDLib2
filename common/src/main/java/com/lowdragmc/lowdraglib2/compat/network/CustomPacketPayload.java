@@ -1,4 +1,4 @@
-package net.minecraft.network.protocol.common.custom;
+package com.lowdragmc.lowdraglib2.compat.network;
 
 import net.minecraft.resources.ResourceLocation;
 

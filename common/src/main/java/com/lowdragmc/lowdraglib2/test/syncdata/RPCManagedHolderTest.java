@@ -10,7 +10,7 @@ import com.lowdragmc.lowdraglib2.syncdata.storage.IManagedStorage;
 import com.lowdragmc.lowdraglib2.syncdata.storage.MultiManagedStorage;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.lowdragmc.lowdraglib2.compat.network.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.gametest.GameTestHolder;

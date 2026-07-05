@@ -6,7 +6,7 @@ import com.lowdragmc.lowdraglib2.syncdata.IManaged;
 import com.lowdragmc.lowdraglib2.syncdata.rpc.RPCMethodMeta;
 import com.lowdragmc.lowdraglib2.syncdata.rpc.RPCSender;
 import com.lowdragmc.lowdraglib2.utils.ByteBufUtil;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.lowdragmc.lowdraglib2.compat.network.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

@@ -5,8 +5,10 @@ import com.lowdragmc.lowdraglib2.CommonProxy;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.Platform;
 import com.lowdragmc.lowdraglib2.client.ClientProxy;
+import com.lowdragmc.lowdraglib2.forge.client.ForgeLDLRendererModel;
 import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -21,6 +23,16 @@ public final class LDLib2Forge {
         if (Platform.isDevEnv()) {
             CommonListeners.ModCreativeModeTab.register(null);
         }
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> new ClientProxy(eventBus));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> LDLib2Forge::initClient);
+    }
+
+    private static void initClient() {
+        var eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        new ClientProxy(eventBus);
+        eventBus.addListener(LDLib2Forge::registerGeometryLoaders);
+    }
+
+    private static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register("renderer", ForgeLDLRendererModel.Loader.INSTANCE);
     }
 }

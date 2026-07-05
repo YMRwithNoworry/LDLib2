@@ -1,4 +1,4 @@
-package net.minecraft.world;
+package com.lowdragmc.lowdraglib2.compat.world;
 
 import net.minecraft.world.entity.Entity;
 

@@ -1,8 +1,9 @@
-package net.minecraft.network;
+package com.lowdragmc.lowdraglib2.compat.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 
 /**

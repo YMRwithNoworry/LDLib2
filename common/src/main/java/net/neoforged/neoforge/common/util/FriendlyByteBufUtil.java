@@ -1,7 +1,7 @@
 package net.neoforged.neoforge.common.util;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 
 import java.util.function.Consumer;
 

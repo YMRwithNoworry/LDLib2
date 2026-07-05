@@ -11,8 +11,8 @@ import com.mojang.serialization.DynamicOps;
 import lombok.Getter;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 @Getter

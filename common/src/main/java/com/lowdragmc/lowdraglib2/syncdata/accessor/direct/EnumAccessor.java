@@ -6,7 +6,7 @@ import com.lowdragmc.lowdraglib2.syncdata.ref.DirectRef;
 import com.lowdragmc.lowdraglib2.syncdata.var.IVar;
 import com.lowdragmc.lowdraglib2.syncdata.ref.UniqueDirectRef;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 

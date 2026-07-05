@@ -11,7 +11,7 @@ import com.lowdragmc.lowdraglib2.utils.LDLibExtraCodecs;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;

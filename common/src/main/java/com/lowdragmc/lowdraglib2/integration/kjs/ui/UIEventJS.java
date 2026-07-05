@@ -8,7 +8,7 @@ import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerMenu;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;

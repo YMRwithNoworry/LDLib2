@@ -3,7 +3,7 @@ package com.lowdragmc.lowdraglib2.gui.factory;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerMenu;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;

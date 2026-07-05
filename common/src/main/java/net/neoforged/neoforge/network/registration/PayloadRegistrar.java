@@ -1,8 +1,8 @@
 package net.neoforged.neoforge.network.registration;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.codec.StreamCodec;
+import com.lowdragmc.lowdraglib2.compat.network.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.BiConsumer;

@@ -3,7 +3,7 @@ package com.lowdragmc.lowdraglib2.utils;
 import io.netty.buffer.Unpooled;
 import lombok.experimental.UtilityClass;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 

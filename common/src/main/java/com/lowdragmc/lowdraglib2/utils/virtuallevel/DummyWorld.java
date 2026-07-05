@@ -15,7 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.profiling.InactiveProfiler;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.TickRateManager;
+import com.lowdragmc.lowdraglib2.compat.world.TickRateManager;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.ChunkPos;

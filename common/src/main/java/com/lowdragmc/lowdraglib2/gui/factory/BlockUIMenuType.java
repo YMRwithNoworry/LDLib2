@@ -116,7 +116,7 @@ public class BlockUIMenuType {
             return new ModularUIContainerMenu(LDMenuTypes.BLOCK_UI.get(), containerId, playerInventory, this);
         }
 
-        public void writeClientSideData(AbstractContainerMenu menu, net.minecraft.network.RegistryFriendlyByteBuf buffer) {
+        public void writeClientSideData(AbstractContainerMenu menu, com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf buffer) {
             buffer.writeBlockPos(pos);
         }
 

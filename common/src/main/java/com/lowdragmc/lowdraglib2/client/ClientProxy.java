@@ -29,6 +29,8 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.client.event.*;
 
+import java.util.function.Consumer;
+
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy {
 
@@ -36,14 +38,36 @@ public class ClientProxy {
     }
 
     public ClientProxy(Object eventBus) {
-        if (eventBus instanceof net.neoforged.bus.api.IEventBus bus) {
-            bus.register(this);
-            return;
-        }
+        addListener(eventBus, RegisterMenuScreensEvent.class, (Consumer<RegisterMenuScreensEvent>) this::onRegisterMenuScreensEvent);
+        addListener(eventBus, RegisterClientTooltipComponentFactoriesEvent.class, (Consumer<RegisterClientTooltipComponentFactoriesEvent>) this::onRegisterClientTooltipComponentFactoriesEvent);
+        addListener(eventBus, EntityRenderersEvent.RegisterRenderers.class, (Consumer<EntityRenderersEvent.RegisterRenderers>) this::registerRenderers);
+        addListener(eventBus, FMLClientSetupEvent.class, (Consumer<FMLClientSetupEvent>) this::clientSetup);
+        addListener(eventBus, ModelEvent.RegisterGeometryLoaders.class, (Consumer<ModelEvent.RegisterGeometryLoaders>) this::modelRegistry);
+        addListener(eventBus, RegisterShadersEvent.class, (Consumer<RegisterShadersEvent>) this::shaderRegistry);
+        addListener(eventBus, RegisterClientReloadListenersEvent.class, (Consumer<RegisterClientReloadListenersEvent>) this::onRegisterClientReloadListenersEvent);
+        addListener(eventBus, ModelEvent.RegisterAdditional.class, (Consumer<ModelEvent.RegisterAdditional>) this::registerModels);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void addListener(Object eventBus, Class<?> eventType, Consumer<?> listener) {
         try {
-            var method = eventBus.getClass().getMethod("register", Object.class);
-            method.invoke(eventBus, this);
+            for (var method : eventBus.getClass().getMethods()) {
+                var parameters = method.getParameterTypes();
+                if (!method.getName().equals("addListener") || parameters.length != 4 ||
+                        !parameters[0].isEnum() || parameters[1] != boolean.class ||
+                        parameters[2] != Class.class || parameters[3] != Consumer.class) {
+                    continue;
+                }
+                var normalPriority = Enum.valueOf((Class<Enum>) parameters[0], "NORMAL");
+                method.invoke(eventBus, normalPriority, false, eventType, listener);
+                return;
+            }
+            var method = eventBus.getClass().getMethod("addListener", Class.class, Consumer.class);
+            method.invoke(eventBus, eventType, listener);
         } catch (ReflectiveOperationException ignored) {
+            if (eventBus instanceof net.neoforged.bus.api.IEventBus bus) {
+                bus.addListener((Consumer) listener);
+            }
         }
     }
 

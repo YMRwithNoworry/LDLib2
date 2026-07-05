@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
 import net.neoforged.neoforge.common.CommonHooks;
 import com.lowdragmc.lowdraglib2.compat.INBTSerializable;
