@@ -1,6 +1,7 @@
 package com.lowdragmc.lowdraglib2.integration.kjs.ui;
 
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerMenu;
+import com.lowdragmc.lowdraglib2.gui.factory.ExtendedMenuOpener;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
@@ -19,7 +20,7 @@ public class KJSHeldItemUIMenuType {
         var heldItem = player.getItemInHand(hand);
         var event = new ItemUIEventJS(player, hand, heldItem, id);
         UIEvents.ITEM.post(ScriptType.SERVER, id, event);
-        return player.openMenu(event).isPresent();
+        return ExtendedMenuOpener.open(player, event, event::writeClientSideData);
     }
 
     public static ModularUIContainerMenu create(int windowId, Inventory inv, RegistryFriendlyByteBuf data) {

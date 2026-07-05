@@ -11,6 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.lwjgl.opengl.GL;
 
@@ -110,35 +111,49 @@ public class LDLibShaders {
 
     public static void registerShaders(RegisterShadersEvent registerShadersEvent) {
 		var resourceProvider = registerShadersEvent.getResourceProvider();
+		registerShaderDefinitions((location, vertexFormat, onLoaded) ->
+				registerShadersEvent.registerShader(new ShaderInstance(resourceProvider, location.toString(), vertexFormat), onLoaded));
+    }
+
+	@OnlyIn(Dist.CLIENT)
+	public static void registerShaders(ResourceProvider resourceProvider, ShaderRegistrar registrar) {
+		registerShaderDefinitions((location, vertexFormat, onLoaded) ->
+				registrar.register(new ShaderInstance(resourceProvider, location.toString(), vertexFormat), onLoaded));
+    }
+
+	@OnlyIn(Dist.CLIENT)
+	public static void registerShaderDefinitions(ShaderDefinitionRegistrar registrar) {
 		try {
-			registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-							LDLib2.id("particle").toString(), DefaultVertexFormat.PARTICLE),
+			registrar.register(LDLib2.id("particle"), DefaultVertexFormat.PARTICLE,
 					shaderInstance -> particleShader = shaderInstance);
-			registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-							LDLib2.id("fast_blit").toString(), DefaultVertexFormat.POSITION),
+			registrar.register(LDLib2.id("fast_blit"), DefaultVertexFormat.POSITION,
 					shaderInstance -> blitShader = shaderInstance);
-            registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-                            LDLib2.id("visual_layer").toString(), DefaultVertexFormat.POSITION_TEX),
+            registrar.register(LDLib2.id("visual_layer"), DefaultVertexFormat.POSITION_TEX,
                     shaderInstance -> visualLayerShader = shaderInstance);
-			registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-							LDLib2.id("sprite_blit").toString(), DefaultVertexFormat.POSITION_TEX_COLOR),
+			registrar.register(LDLib2.id("sprite_blit"), DefaultVertexFormat.POSITION_TEX_COLOR,
 					shaderInstance -> spriteBlitShader = shaderInstance);
-			registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-							LDLib2.id("hsb_block").toString(), HSB_VERTEX_FORMAT),
+			registrar.register(LDLib2.id("hsb_block"), HSB_VERTEX_FORMAT,
 					shaderInstance -> hsbShader = shaderInstance);
-			registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-							LDLib2.id("graph_wire").toString(), DefaultVertexFormat.POSITION_TEX_COLOR),
+			registrar.register(LDLib2.id("graph_wire"), DefaultVertexFormat.POSITION_TEX_COLOR,
 					shaderInstance -> graphWireShader = shaderInstance);
-            registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-                            LDLib2.id("sdf_rect").toString(), DefaultVertexFormat.POSITION),
+            registrar.register(LDLib2.id("sdf_rect"), DefaultVertexFormat.POSITION,
                     shaderInstance -> SDFRect = shaderInstance);
-            registerShadersEvent.registerShader(new ShaderInstance(resourceProvider,
-                            LDLib2.id("gui_texture").toString(), DefaultVertexFormat.POSITION_TEX_COLOR),
+            registrar.register(LDLib2.id("gui_texture"), DefaultVertexFormat.POSITION_TEX_COLOR,
                     shaderInstance -> guiTexture = shaderInstance);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
     }
+
+	@FunctionalInterface
+	public interface ShaderRegistrar {
+		void register(ShaderInstance shader, java.util.function.Consumer<ShaderInstance> onLoaded) throws IOException;
+	}
+
+	@FunctionalInterface
+	public interface ShaderDefinitionRegistrar {
+		void register(ResourceLocation location, VertexFormat vertexFormat, java.util.function.Consumer<ShaderInstance> onLoaded) throws IOException;
+	}
 
 	public static boolean supportComputeShader() {
 		return GL.getCapabilities().GL_ARB_compute_shader;

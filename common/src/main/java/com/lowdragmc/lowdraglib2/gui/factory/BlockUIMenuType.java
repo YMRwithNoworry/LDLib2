@@ -29,7 +29,7 @@ public class BlockUIMenuType {
         var blockstate = player.level().getBlockState(pos);
         if (blockstate.getBlock() instanceof BlockUI blockUI) {
             var holder = blockUI.createUIHolder(player, pos, blockstate);
-            return player.openMenu(holder).isPresent();
+            return ExtendedMenuOpener.open(player, holder, holder::writeClientSideData);
         }
         return false;
     }

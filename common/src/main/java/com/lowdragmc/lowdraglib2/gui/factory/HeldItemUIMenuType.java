@@ -32,7 +32,7 @@ public class HeldItemUIMenuType {
         var heldItem = player.getItemInHand(hand);
         if (heldItem.getItem() instanceof HeldItemUI heldItemUI) {
             var holder = heldItemUI.createUIHolder(player, hand, heldItem);
-            return player.openMenu(holder).isPresent();
+            return ExtendedMenuOpener.open(player, holder, holder::writeClientSideData);
         }
         return false;
     }

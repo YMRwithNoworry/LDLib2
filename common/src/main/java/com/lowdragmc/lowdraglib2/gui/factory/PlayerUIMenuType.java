@@ -43,7 +43,7 @@ public class PlayerUIMenuType {
         if (!UI_HOLDERS.containsKey(id)) return false;
         var holder = UI_HOLDERS.get(id).apply(player);
         if (holder == null) return false;
-        player.openMenu(new MenuProvider() {
+        var provider = new MenuProvider() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable(id.toLanguageKey());
@@ -58,8 +58,9 @@ public class PlayerUIMenuType {
             public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buffer) {
                 buffer.writeResourceLocation(id);
             }
-        });
-        return true;
+        };
+        return player instanceof net.minecraft.server.level.ServerPlayer serverPlayer &&
+                ExtendedMenuOpener.open(serverPlayer, provider, provider::writeClientSideData);
     }
 
     public static ModularUIContainerMenu create(int windowId, Inventory inv, FriendlyByteBuf data) {

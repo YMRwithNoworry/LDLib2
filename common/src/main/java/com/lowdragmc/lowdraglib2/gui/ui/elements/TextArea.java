@@ -1151,7 +1151,7 @@ public class TextArea extends BindableUIElement<String[]> {
 
         // Text
         RenderSystem.depthMask(false);
-        guiContext.graphics.drawManaged(() -> drawLines(guiContext, font, textFont, scale, x, y, firstVisibleLine, lastVisibleLine));
+        drawLines(guiContext, font, textFont, scale, x, y, firstVisibleLine, lastVisibleLine);
         RenderSystem.depthMask(true);
 
         // Selection

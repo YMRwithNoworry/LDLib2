@@ -21,12 +21,14 @@ public class ModularUIContainerScreen extends AbstractContainerScreen<ModularUIC
 
     @Override
     public void init() {
-        // the modular widget has already added + init by events
-        this.imageWidth = (int) getMenu().getModularUI().getWidth();
-        this.imageHeight = (int) getMenu().getModularUI().getHeight();
+        var modularUI = getMenu().getModularUI();
+        this.imageWidth = (int) modularUI.getWidth();
+        this.imageHeight = (int) modularUI.getHeight();
         super.init();
+        modularUI.setScreenAndInit(this);
+        this.addRenderableWidget(modularUI.getWidget());
         // initial focus
-        setFocused(getMenu().modularUI.getWidget());
+        setFocused(modularUI.getWidget());
     }
 
     @Override

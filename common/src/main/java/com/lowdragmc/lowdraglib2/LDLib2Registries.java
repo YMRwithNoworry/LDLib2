@@ -57,6 +57,8 @@ public class LDLib2Registries {
                     IRenderer.EmptyRenderer.class.getAnnotation(LDLRegisterClient.class),
                     IRenderer.EmptyRenderer.class,
                     () -> IRenderer.EMPTY));
+            LDLib2.LOGGER.info("LDLib2 editor registries loaded: ui_elements={}, gui_textures={}, renderers={}, configurator_accessors={}",
+                    UI_ELEMENTS.values().size(), GUI_TEXTURES.values().size(), RENDERERS.values().size(), CONFIGURATOR_ACCESSORS.values().size());
         }
 
         RESOURCE_PROVIDER_TYPES.register(BuiltinResourceProvider.TYPE.getTypeName(), BuiltinResourceProvider.TYPE);
