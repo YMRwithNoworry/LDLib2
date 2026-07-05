@@ -47,6 +47,7 @@ public final class LDLib2Forge {
     }
 
     private static void registerClientCommands(RegisterClientCommandsEvent event) {
+        LDLib2.LOGGER.info("Registering LDLib2 Forge client commands");
         ClientCommands.createClientCommands().forEach(event.getDispatcher()::register);
     }
 }

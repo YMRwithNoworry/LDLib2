@@ -1,5 +1,6 @@
 package com.lowdragmc.lowdraglib2.gui.factory;
 
+import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerMenu;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,6 +24,7 @@ public class PlayerUIMenuType {
 
     public static void register(ResourceLocation id, Function<Player, PlayerUIHolder> holder) {
         UI_HOLDERS.put(id, holder);
+        LDLib2.LOGGER.debug("Registered LDLib2 player UI holder {}", id);
     }
 
     public static void unregister(ResourceLocation id) {
@@ -40,8 +42,12 @@ public class PlayerUIMenuType {
      *         or the holder instance could not be created
      */
     public static boolean openUI(Player player, ResourceLocation id) {
-        if (!UI_HOLDERS.containsKey(id)) return false;
-        var holder = UI_HOLDERS.get(id).apply(player);
+        var holderFactory = UI_HOLDERS.get(id);
+        if (holderFactory == null) {
+            LDLib2.LOGGER.warn("No LDLib2 player UI holder registered for {}", id);
+            return false;
+        }
+        var holder = holderFactory.apply(player);
         if (holder == null) return false;
         var provider = new MenuProvider() {
             @Override
@@ -65,7 +71,12 @@ public class PlayerUIMenuType {
 
     public static ModularUIContainerMenu create(int windowId, Inventory inv, FriendlyByteBuf data) {
         var id = data.readResourceLocation();
-        var holder = UI_HOLDERS.get(id).apply(inv.player);
+        LDLib2.LOGGER.info("Creating LDLib2 player UI menu {} for {}", id, inv.player.getGameProfile().getName());
+        var holderFactory = UI_HOLDERS.get(id);
+        if (holderFactory == null) {
+            throw new IllegalArgumentException("No player ui holder registered for id " + id);
+        }
+        var holder = holderFactory.apply(inv.player);
         if (holder == null) throw new IllegalArgumentException("No player ui holder found for id " + id);
         return new ModularUIContainerMenu(LDMenuTypes.PLAYER_UI.get(), windowId, inv, holder);
     }

@@ -1,5 +1,6 @@
 package com.lowdragmc.lowdraglib2.core.mixins.ui;
 
+import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.gui.event.ContainerMenuEvent;
 import com.lowdragmc.lowdraglib2.gui.holder.IModularUIHolder;
 import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
@@ -37,6 +38,10 @@ public abstract class MenuTypeMixin<T extends AbstractContainerMenu> {
             at = @At(value = "RETURN"), require = 0)
     private void ldlib2$create2$return(int containerId, Inventory playerInventory, FriendlyByteBuf extraData, CallbackInfoReturnable<T> cir) {
         var menu = cir.getReturnValue();
+        if (menu == null) {
+            LDLib2.LOGGER.warn("LDLib2 extended menu creation returned null for container {}", containerId);
+            return;
+        }
         NeoForge.EVENT_BUS.post(new ContainerMenuEvent.Create(playerInventory.player, menu));
         if (menu instanceof IModularUIHolder holder) {
             var registryBuf = extraData instanceof RegistryFriendlyByteBuf buf ? buf :

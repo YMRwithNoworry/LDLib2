@@ -1,5 +1,6 @@
 package com.lowdragmc.lowdraglib2.gui.holder;
 
+import com.lowdragmc.lowdraglib2.LDLib2;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -22,6 +23,7 @@ public class ModularUIContainerScreen extends AbstractContainerScreen<ModularUIC
     @Override
     public void init() {
         var modularUI = getMenu().getModularUI();
+        LDLib2.LOGGER.info("Initializing LDLib2 modular UI screen {}x{}", modularUI.getWidth(), modularUI.getHeight());
         this.imageWidth = (int) modularUI.getWidth();
         this.imageHeight = (int) modularUI.getHeight();
         super.init();

@@ -83,8 +83,10 @@ public class ServerCommands {
         }
         if (!PlayerUIMenuType.openUI(player, UIEditor.WINDOW_ID)) {
             source.sendFailure(Component.literal("Failed to open LDLib2 UI editor: player UI holder is not registered"));
+            LDLib2.LOGGER.warn("Failed to open LDLib2 UI editor for {}: player UI holder is not registered", player.getGameProfile().getName());
             return 0;
         }
+        LDLib2.LOGGER.info("Opened LDLib2 UI editor for {} from server command", player.getGameProfile().getName());
         return 1;
     }
 
