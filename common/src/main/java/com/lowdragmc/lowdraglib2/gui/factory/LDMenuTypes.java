@@ -35,8 +35,6 @@ public final class LDMenuTypes {
             return new ModularUI(UI.empty());
         });
 
-        if (eventBus instanceof net.neoforged.bus.api.IEventBus bus) {
-            MENUS.register(bus);
-        }
+        MENUS.register();
     }
 }

@@ -1,10 +1,7 @@
 package com.lowdragmc.lowdraglib2.core.mixins;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib2.client.renderer.IItemRendererProvider;
@@ -16,8 +13,8 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-
-import java.util.Collection;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author KilaBash
@@ -27,6 +24,9 @@ import java.util.Collection;
 public abstract class ModelBakeryMixin {
 
     @Shadow abstract UnbakedModel getModel(ResourceLocation modelPath);
+
+    @Shadow
+    private java.util.Map<ResourceLocation, UnbakedModel> topLevelModels;
 
     @WrapOperation(method = "getModel",
               at = @At(value = "INVOKE",
@@ -46,21 +46,15 @@ public abstract class ModelBakeryMixin {
         original.call(instance, s, objects);
     }
 
-    @ModifyExpressionValue(method = "registerModelAndLoadDependencies",
-                           at = @At(value = "INVOKE",
-                                    target = "Lnet/minecraft/client/resources/model/UnbakedModel;getDependencies()Ljava/util/Collection;"))
-    protected Collection<ResourceLocation> ldlib2$changeLoadedModel(Collection<ResourceLocation> original,
-                                                                   @Local(argsOnly = true) ModelResourceLocation modelResourceLocation,
-                                                                   @Local(argsOnly = true) LocalRef<UnbakedModel> model) {
+    @Inject(method = "loadTopLevel", at = @At("RETURN"))
+    protected void ldlib2$changeLoadedModel(ModelResourceLocation modelResourceLocation, CallbackInfo ci) {
         if (!modelResourceLocation.getVariant().equals("inventory")) {
             ResourceLocation resourceLocation = new ResourceLocation(modelResourceLocation.getNamespace(), modelResourceLocation.getPath());
             var block = BuiltInRegistries.BLOCK.get(resourceLocation);
             if (block instanceof IBlockRendererProvider) {
                 UnbakedModel newModel = getModel(LDLib2.id("block/renderer_model"));
-                model.set(newModel);
-                return newModel.getDependencies();
+                topLevelModels.put(modelResourceLocation, newModel);
             }
         }
-        return original;
     }
 }

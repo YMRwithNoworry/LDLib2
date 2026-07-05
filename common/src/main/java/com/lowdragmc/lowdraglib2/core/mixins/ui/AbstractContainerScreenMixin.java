@@ -72,7 +72,12 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;IIII)V"))
+    @Redirect(method = "render", require = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;III)V"))
+    private void ldlib2$renderSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset) {
+        ldlib2$renderSlotHighlight(guiGraphics, x, y, blitOffset, -2130706433);
+    }
+
+    @Redirect(method = "render", require = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;IIII)V"))
     private void ldlib2$renderSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, int color) {
         if (getMenu() instanceof IItemSlotHolderMenu menu) {
             if (menu.isItemSlot(hoveredSlot)) {

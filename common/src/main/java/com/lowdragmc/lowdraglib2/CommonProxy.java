@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib2.plugin.LDLibPlugin;
 import com.lowdragmc.lowdraglib2.syncdata.AccessorRegistries;
 import com.lowdragmc.lowdraglib2.utils.ReflectionUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,6 +29,8 @@ public class CommonProxy {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RendererBlockEntity>> RENDERER_BE_TYPE;
 
     static {
+        BLOCKS.register("renderer_block", () -> RendererBlock.BLOCK);
+        ITEMS.register("renderer_block", () -> new BlockItem(RendererBlock.BLOCK, new Item.Properties()));
         RENDERER_BE_TYPE = BLOCK_ENTITY_TYPES.register("renderer_block", () -> BlockEntityType.Builder.of(RendererBlockEntity::new, RendererBlock.BLOCK).build(null));
     }
 
@@ -37,8 +40,6 @@ public class CommonProxy {
     }
 
     public CommonProxy(Object eventBus) {
-        BLOCKS.register("renderer_block", () -> RendererBlock.BLOCK);
-
         // used for forge events (ClientProxy + CommonProxy)
         addListener(eventBus, (Consumer<net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent>) LDLNetworking::registerPayloads);
         // init common features
@@ -61,17 +62,17 @@ public class CommonProxy {
 
     public static void init(Object eventBus) {
         LDLib2Registries.init();
+        CommonListeners.init();
         AccessorRegistries.init();
         RPCPacketDistributor.init();
+        LDLNetworking.init();
         PropertyRegistry.init();
         LDMenuTypes.init(eventBus);
         TypeHandles.init();
 
-        if (eventBus != null) {
-            registerDeferred(BLOCKS, eventBus);
-            registerDeferred(ITEMS, eventBus);
-            registerDeferred(BLOCK_ENTITY_TYPES, eventBus);
-        }
+        registerDeferred(BLOCKS, eventBus);
+        registerDeferred(ITEMS, eventBus);
+        registerDeferred(BLOCK_ENTITY_TYPES, eventBus);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -88,9 +89,7 @@ public class CommonProxy {
     }
 
     private static void registerDeferred(DeferredRegister<?> register, Object eventBus) {
-        if (eventBus instanceof net.neoforged.bus.api.IEventBus bus) {
-            register.register(bus);
-        }
+        register.register();
     }
 
 }

@@ -26,6 +26,9 @@ public class Platform {
     public static RegistryAccess SERVER_REGISTRY_ACCESS = null;
 
     @ApiStatus.Internal
+    public static MinecraftServer MINECRAFT_SERVER = null;
+
+    @ApiStatus.Internal
     public static ResourceManager RESOURCE_MANAGER = null;
 
     // This is a helper method to check if the ServerLevel is safe to access.
@@ -80,7 +83,7 @@ public class Platform {
     }
 
     public static MinecraftServer getMinecraftServer() {
-        return null;
+        return MINECRAFT_SERVER;
     }
 
     public ResourceManager getResourceProvider() {

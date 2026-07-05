@@ -3,8 +3,11 @@ package com.lowdragmc.lowdraglib2;
 import com.lowdragmc.lowdraglib2.async.AsyncThreadData;
 import com.lowdragmc.lowdraglib2.editor.resource.PackResourceManager;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.*;
+import dev.architectury.event.events.common.CommandRegistrationEvent;
+import dev.architectury.event.events.common.LifecycleEvent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -29,6 +32,22 @@ import java.util.function.Supplier;
  */
 @EventBusSubscriber(modid = LDLib2.MOD_ID)
 public class CommonListeners {
+    private static boolean registered;
+
+    public static void init() {
+        if (registered) {
+            return;
+        }
+        registered = true;
+
+        LifecycleEvent.SERVER_BEFORE_START.register(CommonListeners::onServerBeforeStart);
+        LifecycleEvent.SERVER_STOPPING.register(CommonListeners::onServerStopping);
+        LifecycleEvent.SERVER_STOPPED.register(CommonListeners::onServerStopped);
+        LifecycleEvent.SERVER_LEVEL_UNLOAD.register(CommonListeners::onServerLevelUnload);
+        CommandRegistrationEvent.EVENT.register((dispatcher, registry, selection) ->
+                ServerCommands.createServerCommands().forEach(dispatcher::register));
+    }
+
 
     public static class ModCreativeModeTab {
         // Deferred register for creative tabs
@@ -44,7 +63,7 @@ public class CommonListeners {
 
         // Method to hook the deferred register to the event bus
         public static void register(IEventBus eventBus) {
-            CREATIVE_MODE_TABS.register(eventBus);
+            CREATIVE_MODE_TABS.register();
         }
     }
 
@@ -58,22 +77,40 @@ public class CommonListeners {
 
     @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        Platform.SERVER_REGISTRY_ACCESS = event.getServer().registryAccess();
+        onServerBeforeStart(event.getServer());
     }
 
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
-        Platform.SERVER_REGISTRY_ACCESS = null;
+        onServerStopped(event.getServer());
     }
 
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
-        var levels = event.getServer().getAllLevels();
+        onServerStopping(event.getServer());
+    }
+
+    private static void onServerBeforeStart(MinecraftServer server) {
+        Platform.MINECRAFT_SERVER = server;
+        Platform.SERVER_REGISTRY_ACCESS = server.registryAccess();
+    }
+
+    private static void onServerStopped(MinecraftServer server) {
+        Platform.SERVER_REGISTRY_ACCESS = null;
+        Platform.MINECRAFT_SERVER = null;
+    }
+
+    private static void onServerStopping(MinecraftServer server) {
+        var levels = server.getAllLevels();
         for (var level : levels) {
             if (!level.isClientSide()) {
                 AsyncThreadData.getOrCreate(level).releaseExecutorService();
             }
         }
+    }
+
+    private static void onServerLevelUnload(ServerLevel level) {
+        AsyncThreadData.getOrCreate(level).releaseExecutorService();
     }
 
     @SubscribeEvent

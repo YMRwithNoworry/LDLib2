@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(LDLib2.MOD_ID)
@@ -29,7 +30,12 @@ public final class LDLib2Forge {
     private static void initClient() {
         var eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         new ClientProxy(eventBus);
+        eventBus.addListener(LDLib2Forge::clientSetup);
         eventBus.addListener(LDLib2Forge::registerGeometryLoaders);
+    }
+
+    private static void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(ClientProxy::registerCommonClientHooks);
     }
 
     private static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {

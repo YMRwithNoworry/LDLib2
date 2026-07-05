@@ -3,6 +3,7 @@ package net.neoforged.neoforge.network.registration;
 import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import com.lowdragmc.lowdraglib2.compat.network.codec.StreamCodec;
 import com.lowdragmc.lowdraglib2.compat.network.CustomPacketPayload;
+import com.lowdragmc.lowdraglib2.networking.LDLNetworking;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.BiConsumer;
@@ -15,9 +16,11 @@ public class PayloadRegistrar {
     }
 
     public <T extends CustomPacketPayload> void playToClient(CustomPacketPayload.Type<T> type, StreamCodec<RegistryFriendlyByteBuf, T> codec, BiConsumer<T, IPayloadContext> handler) {
+        LDLNetworking.register(type, codec, handler);
     }
 
     public <T extends CustomPacketPayload> void playBidirectional(CustomPacketPayload.Type<T> type, StreamCodec<RegistryFriendlyByteBuf, T> codec, BiConsumer<T, IPayloadContext> handler) {
+        LDLNetworking.register(type, codec, handler);
     }
 
     public String namespace() {

@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib2.client.model.forge.LDLRendererModel;
 import com.lowdragmc.lowdraglib2.client.renderer.ATESRRendererProvider;
 import com.lowdragmc.lowdraglib2.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib2.client.shader.LDLibShaders;
-import com.lowdragmc.lowdraglib2.core.mixins.ParticleEngineAccessor;
 import com.lowdragmc.lowdraglib2.editor.resource.IRendererResource;
 import com.lowdragmc.lowdraglib2.editor.resource.PackResourceManager;
 import com.lowdragmc.lowdraglib2.gui.factory.LDMenuTypes;
@@ -15,9 +14,14 @@ import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerScreen;
 import com.lowdragmc.lowdraglib2.gui.ui.style.StylesheetManager;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUIClientElementComponent;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUITooltipComponent;
-import com.lowdragmc.lowdraglib2.gui.util.DrawerHelper;
+import dev.architectury.registry.ReloadListenerRegistry;
+import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
+import dev.architectury.registry.menu.MenuRegistry;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.client.resources.model.*;
@@ -26,15 +30,19 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.client.event.*;
 
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy {
+    private static boolean commonClientRegistered;
+    private static Field particleProvidersField;
 
     public ClientProxy() {
+        registerCommonClientHooks();
     }
 
     public ClientProxy(Object eventBus) {
@@ -69,6 +77,19 @@ public class ClientProxy {
                 bus.addListener((Consumer) listener);
             }
         }
+    }
+
+    public static void registerCommonClientHooks() {
+        if (commonClientRegistered) {
+            return;
+        }
+        commonClientRegistered = true;
+        MenuRegistry.registerScreenFactory(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new);
+        MenuRegistry.registerScreenFactory(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new);
+        MenuRegistry.registerScreenFactory(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new);
+        BlockEntityRendererRegistry.register(CommonProxy.RENDERER_BE_TYPE.get(), ATESRRendererProvider::new);
+        ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, PackResourceManager.INSTANCE, LDLib2.id("pack_resources"));
+        ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, StylesheetManager.INSTANCE, LDLib2.id("stylesheets"));
     }
 
     @SubscribeEvent
@@ -132,8 +153,42 @@ public class ClientProxy {
     }
 
     public static ParticleProvider getProvider(ParticleType<?> type) {
-        if (Minecraft.getInstance().particleEngine instanceof ParticleEngineAccessor accessor) {
-            return accessor.getProviders().get(BuiltInRegistries.PARTICLE_TYPE.getKey(type));
+        var particleEngine = Minecraft.getInstance().particleEngine;
+        try {
+            var cachedProvider = getParticleProvider(particleEngine, particleProvidersField, type);
+            if (cachedProvider != null) {
+                return cachedProvider;
+            }
+            for (var field : particleEngine.getClass().getDeclaredFields()) {
+                var provider = getParticleProvider(particleEngine, field, type);
+                if (provider != null) {
+                    particleProvidersField = field;
+                    return provider;
+                }
+            }
+        } catch (ReflectiveOperationException | RuntimeException ignored) {
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static ParticleProvider getParticleProvider(ParticleEngine particleEngine, Field field, ParticleType<?> type) throws IllegalAccessException {
+        if (field == null) {
+            return null;
+        }
+        if (Int2ObjectMap.class.isAssignableFrom(field.getType())) {
+            field.setAccessible(true);
+            var provider = ((Int2ObjectMap<?>) field.get(particleEngine))
+                    .get(BuiltInRegistries.PARTICLE_TYPE.getId(type));
+            return provider instanceof ParticleProvider<?> particleProvider ? particleProvider : null;
+        }
+        if (Map.class.isAssignableFrom(field.getType())) {
+            field.setAccessible(true);
+            var provider = ((Map<?, ?>) field.get(particleEngine))
+                    .get(BuiltInRegistries.PARTICLE_TYPE.getKey(type));
+            if (provider instanceof ParticleProvider<?> particleProvider) {
+                return particleProvider;
+            }
         }
         return null;
     }

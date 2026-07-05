@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib2.client.shader.LDProgramDefineManager;
 import com.mojang.blaze3d.shaders.Program;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.util.GsonHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,19 +21,19 @@ import java.io.IOException;
 public abstract class ShaderInstanceMixin implements ILDShaderInstance {
     private JsonObject ldlib2$shaderJson;
 
-    @Inject(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
+    @Inject(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
             require = 1,
             at = @At("RETURN"))
     public void ldlib2$onCreateShader(ResourceProvider resourceProvider,
-                                      ResourceLocation shaderLocation,
+                                      String shaderLocation,
                                       VertexFormat vertexFormat,
                                       CallbackInfo ci) throws IOException {
         if (ldlib2$shaderJson != null) {
-            this.onCreateShader(resourceProvider, shaderLocation, vertexFormat, ldlib2$shaderJson);
+            this.onCreateShader(resourceProvider, new net.minecraft.resources.ResourceLocation(shaderLocation), vertexFormat, ldlib2$shaderJson);
         }
     }
 
-    @ModifyExpressionValue(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
+    @ModifyExpressionValue(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/util/GsonHelper;parse(Ljava/io/Reader;)Lcom/google/gson/JsonObject;"))
     private JsonObject ldlib2$captureShaderJson(JsonObject json) {

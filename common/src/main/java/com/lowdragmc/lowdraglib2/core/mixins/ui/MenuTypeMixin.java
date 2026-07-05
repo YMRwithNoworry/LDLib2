@@ -34,7 +34,7 @@ public abstract class MenuTypeMixin<T extends AbstractContainerMenu> {
 
 
     @Inject(method = "create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;",
-            at = @At(value = "RETURN"))
+            at = @At(value = "RETURN"), require = 0)
     private void ldlib2$create2$return(int containerId, Inventory playerInventory, FriendlyByteBuf extraData, CallbackInfoReturnable<T> cir) {
         var menu = cir.getReturnValue();
         NeoForge.EVENT_BUS.post(new ContainerMenuEvent.Create(playerInventory.player, menu));
