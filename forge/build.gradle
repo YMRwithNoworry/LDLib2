@@ -42,6 +42,7 @@ dependencies {
         exclude group: "it.unimi.dsi", module: "fastutil"
     }
     implementation "io.github.llamalad7:mixinextras-common:0.5.0"
+    include "io.github.llamalad7:mixinextras-forge:0.5.0"
 
     compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}") { transitive = false }
     compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-forge-api:${rootProject.jei_version}") { transitive = false }
@@ -58,7 +59,6 @@ dependencies {
     shadowBundle("dev.vfyjxf:taffy:${rootProject.taffy_version}") {
         exclude group: "it.unimi.dsi", module: "fastutil"
     }
-    shadowBundle "io.github.llamalad7:mixinextras-common:0.5.0"
 
     developmentForge("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.kotlin_stdlib_version}") {
         exclude group: "org.jetbrains", module: "annotations"
