@@ -7,7 +7,10 @@ import com.lowdragmc.lowdraglib2.Platform;
 import com.lowdragmc.lowdraglib2.client.ClientCommands;
 import com.lowdragmc.lowdraglib2.client.ClientProxy;
 import com.lowdragmc.lowdraglib2.forge.client.ForgeLDLRendererModel;
+import com.lowdragmc.lowdraglib2.gui.factory.LDMenuTypes;
+import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerScreen;
 import dev.architectury.platform.forge.EventBuses;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -39,11 +42,21 @@ public final class LDLib2Forge {
     }
 
     private static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(ClientProxy::registerCommonClientHooks);
+        event.enqueueWork(() -> {
+            ClientProxy.registerCommonClientHooks();
+            registerMenuScreens();
+        });
     }
 
     private static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register("renderer", ForgeLDLRendererModel.Loader.INSTANCE);
+    }
+
+    private static void registerMenuScreens() {
+        LDLib2.LOGGER.info("Registering LDLib2 Forge menu screens");
+        MenuScreens.register(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new);
+        MenuScreens.register(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new);
+        MenuScreens.register(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new);
     }
 
     private static void registerClientCommands(RegisterClientCommandsEvent event) {

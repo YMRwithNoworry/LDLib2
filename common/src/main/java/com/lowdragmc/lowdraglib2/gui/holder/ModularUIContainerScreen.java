@@ -18,6 +18,7 @@ public class ModularUIContainerScreen extends AbstractContainerScreen<ModularUIC
 
     public ModularUIContainerScreen(ModularUIContainerMenu container, Inventory inventory, Component title) {
         super(container, inventory, title);
+        LDLib2.LOGGER.info("Constructed LDLib2 modular UI screen for menu {}", container.containerId);
     }
 
     @Override

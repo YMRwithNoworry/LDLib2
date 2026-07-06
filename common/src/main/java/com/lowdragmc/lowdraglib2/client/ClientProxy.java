@@ -84,9 +84,12 @@ public class ClientProxy {
             return;
         }
         commonClientRegistered = true;
-        MenuRegistry.registerScreenFactory(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new);
-        MenuRegistry.registerScreenFactory(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new);
-        MenuRegistry.registerScreenFactory(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new);
+        if (!Platform.isForge()) {
+            LDLib2.LOGGER.info("Registering LDLib2 common menu screens");
+            MenuRegistry.registerScreenFactory(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new);
+            MenuRegistry.registerScreenFactory(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new);
+            MenuRegistry.registerScreenFactory(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new);
+        }
         BlockEntityRendererRegistry.register(CommonProxy.RENDERER_BE_TYPE.get(), ATESRRendererProvider::new);
         ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, PackResourceManager.INSTANCE, LDLib2.id("pack_resources"));
         ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, StylesheetManager.INSTANCE, LDLib2.id("stylesheets"));

@@ -16,11 +16,18 @@ function assertIncludes(file, source, expected) {
 const forgeEntryPath = "forge/src/main/java/com/lowdragmc/lowdraglib2/forge/LDLib2Forge.java";
 const forgeEntry = read(forgeEntryPath);
 
-assertIncludes(forgeEntryPath, forgeEntry, "event.enqueueWork(ClientProxy::registerCommonClientHooks);");
+assertIncludes(forgeEntryPath, forgeEntry, "ClientProxy.registerCommonClientHooks();");
+assertIncludes(forgeEntryPath, forgeEntry, "registerMenuScreens();");
 assertIncludes(forgeEntryPath, forgeEntry, "MinecraftForge.EVENT_BUS.addListener(LDLib2Forge::registerClientCommands);");
-if (forgeEntry.includes("MenuScreens.register(") || forgeEntry.includes("registerMenuScreens()")) {
-  throw new Error(`${forgeEntryPath} must not directly register menu screens; ClientProxy.registerCommonClientHooks owns that path.`);
-}
+assertIncludes(forgeEntryPath, forgeEntry, "Registering LDLib2 Forge menu screens");
+assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new)");
+assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new)");
+assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new)");
+
+const clientProxyPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/ClientProxy.java";
+const clientProxy = read(clientProxyPath);
+assertIncludes(clientProxyPath, clientProxy, "if (!Platform.isForge())");
+assertIncludes(clientProxyPath, clientProxy, "MenuRegistry.registerScreenFactory(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new)");
 
 const clientCommandsPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/ClientCommands.java";
 const clientCommands = read(clientCommandsPath);
