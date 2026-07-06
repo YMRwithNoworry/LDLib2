@@ -32,7 +32,6 @@ import net.minecraft.world.level.material.Fluids;
 import com.lowdragmc.lowdraglib2.compat.FluidStack;
 import com.lowdragmc.lowdraglib2.compat.FluidTank;
 import com.lowdragmc.lowdraglib2.compat.ItemStackHandler;
-import org.apache.commons.lang3.function.Consumers;
 import org.appliedenergistics.yoga.YogaEdge;
 
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +40,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 @LDLRegister(name="ui_sync", registry = "ldlib2:menu_test")
 @ParametersAreNonnullByDefault
@@ -155,7 +156,7 @@ public class TestSync implements IMenuTest {
         selector1.addChild(
                 // a placeholder element value to sync candidates, it won't affect layout
                 new BindableValue<String[]>().bind(DataBindingBuilder.create(
-                        () -> serverCandidates1.toArray(String[]::new), Consumers.nop())
+                        () -> serverCandidates1.toArray(String[]::new), noopConsumer())
                         .c2sStrategy(SyncStrategy.NONE) // only s -> c
                         .remoteSetter(candidates -> {
                             selector1.setCandidates(Arrays.stream(candidates).toList());
@@ -171,7 +172,7 @@ public class TestSync implements IMenuTest {
         selector2.addChild(
                 // a placeholder element value to sync candidates, it won't affect layout
                 new BindableValue<List<String>>().bind(DataBindingBuilder.create(
-                                () -> LDLib2.isRemote() ? clientCandidates : serverCandidates2, Consumers.nop())
+                                () -> LDLib2.isRemote() ? clientCandidates : serverCandidates2, noopConsumer())
                         .syncType(type)
                         .initialValue(LDLib2.isRemote() ? clientCandidates : serverCandidates2)
                         .c2sStrategy(SyncStrategy.NONE) // only s -> c

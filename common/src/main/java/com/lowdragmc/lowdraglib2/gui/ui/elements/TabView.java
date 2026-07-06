@@ -23,7 +23,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import org.apache.commons.lang3.function.Consumers;
 import org.appliedenergistics.yoga.YogaEdge;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
@@ -34,6 +33,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -47,7 +48,7 @@ public class TabView extends UIElement {
     @Getter
     private final BiMap<Tab, UIElement> tabContents = HashBiMap.create();
     @Setter
-    private Consumer<Tab> onTabSelected = Consumers.nop();
+    private Consumer<Tab> onTabSelected = noopConsumer();
     // runtime
     @Nullable
     @Getter

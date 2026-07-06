@@ -60,7 +60,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.function.Consumers;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -70,6 +69,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -188,7 +189,7 @@ public class GraphView extends UIElement {
         addEventListener(UIEvents.VALIDATE_COMMAND, this::onValidateCommand);
         addEventListener(UIEvents.EXECUTE_COMMAND, this::onExecuteCommand);
 
-        setEnforceFocus(Consumers.nop());
+        setEnforceFocus(noopConsumer());
 
         // ItemLibrary is hidden until explicitly shown — popup visibility is state-driven.
         Style.importantPipeline(itemLibrary.getLayout(), l -> l.display(TaffyDisplay.NONE));

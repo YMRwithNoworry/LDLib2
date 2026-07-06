@@ -27,12 +27,13 @@ import net.minecraft.nbt.NbtOps;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.function.Consumers;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 
 import java.util.*;
 import java.util.function.Consumer;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 public class UIHierarchy extends UIElement {
     public record DraggingUINode(UITreeNode draggedNode) {}
@@ -43,7 +44,7 @@ public class UIHierarchy extends UIElement {
 
     // runtime
     @Setter
-    protected Consumer<Set<UITreeNode>> onSelectedChanged = Consumers.nop();
+    protected Consumer<Set<UITreeNode>> onSelectedChanged = noopConsumer();
 
     @Getter @Nullable
     private UI ui;

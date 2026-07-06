@@ -9,7 +9,6 @@ import com.lowdragmc.lowdraglib2.syncdata.field.ManagedKey;
 import com.lowdragmc.lowdraglib2.syncdata.holder.blockentity.IBlockEntityManaged;
 import com.lowdragmc.lowdraglib2.syncdata.ref.IRef;
 import net.minecraft.Util;
-import org.apache.commons.lang3.function.Consumers;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +18,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 public class FieldManagedStorage implements IManagedStorage {
 
@@ -67,7 +68,7 @@ public class FieldManagedStorage implements IManagedStorage {
                         } catch (Throwable t) {
                             LDLib2.LOGGER.error("Error occurred while notifying field {} update", key, t);
                         }
-                        return Consumers.nop();
+                        return noopConsumer();
                     });
         }
         return Stream.empty();

@@ -13,6 +13,18 @@ function assertIncludes(file, source, expected) {
   }
 }
 
+function walk(dir, results = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walk(fullPath, results);
+    } else {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
 const forgeEntryPath = "forge/src/main/java/com/lowdragmc/lowdraglib2/forge/LDLib2Forge.java";
 const forgeEntry = read(forgeEntryPath);
 
@@ -58,6 +70,13 @@ const directScreenPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/hol
 const directScreen = read(directScreenPath);
 assertIncludes(directScreenPath, directScreen, "Initializing LDLib2 modular UI direct screen");
 assertIncludes(directScreenPath, directScreen, "modularUI.setScreenAndInit(this)");
+
+const commonsFunctionReferences = walk(path.join(root, "common", "src", "main"))
+  .filter((file) => /\.(java|kt)$/.test(file))
+  .filter((file) => fs.readFileSync(file, "utf8").includes("org.apache.commons.lang3.function"));
+if (commonsFunctionReferences.length > 0) {
+  throw new Error(`Forge 1.20.1 runtime lacks commons-lang3 function helpers: ${commonsFunctionReferences.join(", ")}`);
+}
 
 const reflectionPath = "common/src/main/java/com/lowdragmc/lowdraglib2/utils/ReflectionUtils.java";
 const reflection = read(reflectionPath);

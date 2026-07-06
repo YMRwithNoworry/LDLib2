@@ -10,12 +10,13 @@ import com.lowdragmc.lowdraglib2.utils.animation.*;
 import it.unimi.dsi.fastutil.floats.FloatObjectPair;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.function.Consumers;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Accessors(fluent = true, chain = true)
@@ -43,7 +44,7 @@ public class StyleAnimation {
     @Setter
     private BiConsumer<AnimationRuntime, UIElement> onInterpolate = (r, e) -> {};
     @Setter
-    private Consumer<UIElement> onFinished = Consumers.nop();
+    private Consumer<UIElement> onFinished = noopConsumer();
 
     private StyleAnimation(@Nullable ModularUI mui) {
         this.mui = mui;

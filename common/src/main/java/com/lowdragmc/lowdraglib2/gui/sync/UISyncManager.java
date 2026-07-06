@@ -12,11 +12,12 @@ import lombok.Getter;
 import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.apache.commons.lang3.function.Consumers;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 public class UISyncManager {
     public final ModularUI modularUI;
@@ -128,7 +129,7 @@ public class UISyncManager {
     }
 
     public void sendEvent(RPCEvent event, Object... args) {
-        sendEvent(event, Consumers.nop(), args);
+        sendEvent(event, noopConsumer(), args);
     }
 
     public <T> void sendEvent(RPCEvent event, Consumer<T> responseCallback, Object... args) {

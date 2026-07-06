@@ -28,7 +28,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.apache.commons.lang3.function.Consumers;
 import org.appliedenergistics.yoga.*;
 
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +37,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import static com.lowdragmc.lowdraglib2.utils.FunctionUtils.noopConsumer;
 
 /**
  * TreeList represents a hierarchical UI element structure, where each node in the hierarchy can contain UI elements and may have a parent node.
@@ -113,9 +114,9 @@ public class TreeList<NODE extends ITreeNode<?, ?>> extends UIElement {
     protected UIElementProvider<NODE> nodeUISupplier = textTemplate(value -> Component.translatable(value.toString()));
     protected BiConsumer<NODE, UIElement> onNodeUICreated = (node, ui) -> {};
     @Setter
-    protected Consumer<Set<NODE>> onSelectedChanged = Consumers.nop();
+    protected Consumer<Set<NODE>> onSelectedChanged = noopConsumer();
     @Setter
-    protected Consumer<NODE> onDoubleClickNode = Consumers.nop();
+    protected Consumer<NODE> onDoubleClickNode = noopConsumer();
     @Setter
     protected Predicate<NODE> selectableNodeFilter = Predicates.alwaysTrue();
     @Setter
