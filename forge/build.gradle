@@ -52,9 +52,6 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle project(path: ":common", configuration: "transformProductionForge")
-    shadowBundle("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.kotlin_stdlib_version}") {
-        exclude group: "org.jetbrains", module: "annotations"
-    }
     shadowBundle "org.appliedenergistics.yoga:yoga:${rootProject.yoga_version}"
     shadowBundle("dev.vfyjxf:taffy:${rootProject.taffy_version}") {
         exclude group: "it.unimi.dsi", module: "fastutil"
