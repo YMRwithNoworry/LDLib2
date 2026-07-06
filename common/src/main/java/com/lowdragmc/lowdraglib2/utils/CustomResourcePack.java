@@ -16,8 +16,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -54,7 +56,7 @@ public class CustomResourcePack extends PathPackResources {
     @Nullable
     @Override
     public IoSupplier<InputStream> getResource(PackType packType, ResourceLocation location) {
-        if (packType != type || !namespace.equals(location.getNamespace())) {
+        if (packType != type || !getNamespaces(packType).contains(location.getNamespace())) {
             return null;
         }
         var resolved = discoverResources(packType).get(location);
@@ -63,7 +65,7 @@ public class CustomResourcePack extends PathPackResources {
 
     @Override
     public void listResources(PackType packType, String namespace, String path, PackResources.ResourceOutput output) {
-        if (packType != type || !this.namespace.equals(namespace)) {
+        if (packType != type || !getNamespaces(packType).contains(namespace)) {
             return;
         }
         var normalizedPath = normalizeResourcePath(path);
@@ -74,23 +76,47 @@ public class CustomResourcePack extends PathPackResources {
         });
     }
 
+    @Override
+    public Set<String> getNamespaces(PackType packType) {
+        var namespaces = new LinkedHashSet<String>();
+        if (packType != type) {
+            return namespaces;
+        }
+        var packRoot = root.resolve(packType.getDirectory());
+        if (!Files.isDirectory(packRoot)) {
+            return namespaces;
+        }
+        try (var stream = Files.list(packRoot)) {
+            stream.filter(Files::isDirectory)
+                    .map(path -> path.getFileName().toString())
+                    .filter(CustomResourcePack::isValidNamespace)
+                    .sorted()
+                    .forEach(namespaces::add);
+        } catch (IOException ignored) {
+            // External editor resources are optional; broken folders should not fail reload.
+        }
+        return namespaces;
+    }
+
     private Map<ResourceLocation, Path> discoverResources(PackType packType) {
         var discovered = new LinkedHashMap<ResourceLocation, Path>();
-        var usedPaths = new LinkedHashMap<String, Path>();
-        var namespaceRoot = root.resolve(packType.getDirectory()).resolve(namespace);
-        if (!Files.isDirectory(namespaceRoot)) {
-            return discovered;
-        }
-        try (var stream = Files.walk(namespaceRoot)) {
-            stream.filter(Files::isRegularFile)
-                    .sorted()
-                    .forEach(file -> {
-                        var rawPath = normalizeResourcePath(namespaceRoot.relativize(file).toString());
-                        var resourcePath = createUniqueResourcePath(sanitizeResourcePath(rawPath), file, usedPaths);
-                        discovered.put(new ResourceLocation(namespace, resourcePath), file);
-                    });
-        } catch (IOException ignored) {
-            // Keep resource loading best-effort; broken external files should not break Minecraft reload.
+        for (var discoveredNamespace : getNamespaces(packType)) {
+            var usedPaths = new LinkedHashMap<String, Path>();
+            var namespaceRoot = root.resolve(packType.getDirectory()).resolve(discoveredNamespace);
+            if (!Files.isDirectory(namespaceRoot)) {
+                continue;
+            }
+            try (var stream = Files.walk(namespaceRoot)) {
+                stream.filter(Files::isRegularFile)
+                        .sorted()
+                        .forEach(file -> {
+                            var rawPath = normalizeResourcePath(namespaceRoot.relativize(file).toString());
+                            var resourcePath = createUniqueResourcePath(sanitizeResourcePath(rawPath), file, usedPaths);
+                            discovered.put(new ResourceLocation(discoveredNamespace, resourcePath), file);
+                        });
+            } catch (IOException ignored) {
+                // Keep resource loading best-effort; broken external files should not break Minecraft reload.
+            }
         }
         return discovered;
     }
@@ -139,6 +165,21 @@ public class CustomResourcePack extends PathPackResources {
         return c == '/' || c == '_' || c == '-' || c == '.' ||
                 (c >= 'a' && c <= 'z') ||
                 (c >= '0' && c <= '9');
+    }
+
+    private static boolean isValidNamespace(String namespace) {
+        if (namespace == null || namespace.isEmpty()) {
+            return false;
+        }
+        for (var i = 0; i < namespace.length(); i++) {
+            var c = namespace.charAt(i);
+            if (c != '_' && c != '-' && c != '.' &&
+                    (c < 'a' || c > 'z') &&
+                    (c < '0' || c > '9')) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static String normalizeResourcePath(String path) {
