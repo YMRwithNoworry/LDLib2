@@ -3,7 +3,6 @@ package com.lowdragmc.lowdraglib2.editor.resource;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.Platform;
 import com.lowdragmc.lowdraglib2.utils.ResourceHelper;
-import lombok.Getter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -16,15 +15,89 @@ import java.io.DataInputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class PackFileResourceProvider<T>  {
-    @Getter
-    public final ResourceInstance<T> resourceInstance;
-    @Getter
-    public final Map<IResourcePath, T> contents = new LinkedHashMap<>();
+public final class PackFileResourceProvider<T> extends ResourceProvider<T>  {
+    private static final String RESOURCE_ROOT = "resources";
+    private final Map<IResourcePath, ResourceLocation> resourceLocations = new LinkedHashMap<>();
 
     public PackFileResourceProvider(ResourceInstance<T> resourceInstance) {
-        this.resourceInstance = resourceInstance;
+        super(resourceInstance);
         PackResourceManager.INSTANCE.registerProvider(this);
+    }
+
+    void clearCachedResources() {
+        contents.clear();
+        resourceLocations.clear();
+    }
+
+    @Override
+    public String getName() {
+        return "mod_resources";
+    }
+
+    @Override
+    public ResourceProviderType getType() {
+        return FileResourceProvider.TYPE;
+    }
+
+    @Override
+    public boolean supportResourcePath(IResourcePath path) {
+        return path instanceof FilePath filePath &&
+                filePath.location != null &&
+                filePath.file.getName().endsWith(resourceInstance.resource.getFileExtension());
+    }
+
+    @Override
+    public IResourcePath createSubPath(String name) {
+        return new FilePath(new ResourceLocation(
+                LDLib2.MOD_ID,
+                RESOURCE_ROOT + "/" + name + resourceInstance.resource.getFileExtension()));
+    }
+
+    @Override
+    public String getResourceName(IResourcePath path) {
+        if (path instanceof FilePath filePath) {
+            var fileName = filePath.file.getName();
+            var suffix = resourceInstance.resource.getFileExtension();
+            if (fileName.endsWith(suffix)) {
+                return fileName.substring(0, fileName.length() - suffix.length());
+            }
+        }
+        return super.getResourceName(path);
+    }
+
+    @Override
+    public boolean addResource(IResourcePath path, T resource) {
+        return false;
+    }
+
+    @Override
+    public @Nullable T removeResource(IResourcePath path) {
+        return null;
+    }
+
+    @Override
+    public boolean canRemove(IResourcePath path) {
+        return false;
+    }
+
+    @Override
+    public boolean canRename(IResourcePath path) {
+        return false;
+    }
+
+    @Override
+    public boolean canEdit(IResourcePath path) {
+        return false;
+    }
+
+    @Override
+    public boolean canCopy(IResourcePath path) {
+        return false;
+    }
+
+    @Override
+    public boolean supportAdd() {
+        return false;
     }
 
     @Nullable
@@ -55,19 +128,43 @@ public final class PackFileResourceProvider<T>  {
         return null;
     }
 
-    public boolean supportResourcePath(IResourcePath path) {
-        return path instanceof FilePath filePath &&
-                filePath.location != null &&
-                filePath.file.getName().endsWith(resourceInstance.resource.getFileExtension());
-    }
-
+    @Override
     public T getResource(IResourcePath path) {
         if (supportResourcePath(path)) {
             if (!contents.containsKey(path)) {
-                contents.put(path, getResourceByLocation(((FilePath)path).location));
+                var location = path instanceof FilePath filePath ? filePath.location : null;
+                if (location != null) {
+                    contents.put(path, getResourceByLocation(location));
+                }
             }
             return contents.get(path);
         }
         return null;
+    }
+
+    @Override
+    public boolean checkAndUpdateResourceProvider() {
+        var discovered = new LinkedHashMap<IResourcePath, ResourceLocation>();
+        var resources = ResourceHelper.getResourceManager().listResources(RESOURCE_ROOT,
+                location -> location.getPath().endsWith(resourceInstance.resource.getFileExtension()));
+        resources.keySet().stream()
+                .sorted(java.util.Comparator.comparing(ResourceLocation::toString))
+                .forEach(location -> discovered.put(new FilePath(location), location));
+
+        if (discovered.keySet().equals(resourceLocations.keySet())) {
+            return false;
+        }
+
+        resourceLocations.clear();
+        resourceLocations.putAll(discovered);
+        contents.clear();
+        for (var entry : resourceLocations.entrySet()) {
+            var resource = getResourceByLocation(entry.getValue());
+            if (resource != null) {
+                contents.put(entry.getKey(), resource);
+            }
+        }
+        resourceInstance.clearCache();
+        return true;
     }
 }

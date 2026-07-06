@@ -58,6 +58,9 @@ public class ResourceInstance<T> implements INBTSerializable<CompoundTag> {
 
     protected void buildBuiltin() {
         this.resource.buildBuiltin(this);
+        if (packFileProvider.checkAndUpdateResourceProvider() || !packFileProvider.getContents().isEmpty()) {
+            addBuiltinProvider(packFileProvider);
+        }
     }
 
     protected void saveResource() {

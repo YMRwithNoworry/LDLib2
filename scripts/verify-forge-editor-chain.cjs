@@ -98,6 +98,29 @@ const modLoaderShimPath = "common/src/main/java/net/neoforged/fml/ModLoader.java
 const modLoaderShim = read(modLoaderShimPath);
 assertIncludes(modLoaderShimPath, modLoaderShim, "return event.isCanceled();");
 
+const resourceInstancePath = "common/src/main/java/com/lowdragmc/lowdraglib2/editor/resource/ResourceInstance.java";
+const resourceInstance = read(resourceInstancePath);
+assertIncludes(resourceInstancePath, resourceInstance, "packFileProvider.checkAndUpdateResourceProvider()");
+assertIncludes(resourceInstancePath, resourceInstance, "addBuiltinProvider(packFileProvider);");
+
+const packFileResourceProviderPath = "common/src/main/java/com/lowdragmc/lowdraglib2/editor/resource/PackFileResourceProvider.java";
+const packFileResourceProvider = read(packFileResourceProviderPath);
+assertIncludes(packFileResourceProviderPath, packFileResourceProvider, "extends ResourceProvider<T>");
+assertIncludes(packFileResourceProviderPath, packFileResourceProvider, 'private static final String RESOURCE_ROOT = "resources";');
+assertIncludes(packFileResourceProviderPath, packFileResourceProvider, "ResourceHelper.getResourceManager().listResources(RESOURCE_ROOT");
+assertIncludes(packFileResourceProviderPath, packFileResourceProvider, "new FilePath(location)");
+assertIncludes(packFileResourceProviderPath, packFileResourceProvider, "return \"mod_resources\";");
+
+const packResourceManagerPath = "common/src/main/java/com/lowdragmc/lowdraglib2/editor/resource/PackResourceManager.java";
+const packResourceManager = read(packResourceManagerPath);
+assertIncludes(packResourceManagerPath, packResourceManager, "provider.clearCachedResources();");
+
+const uiExamples = walk(path.join(root, "common", "src", "main", "resources", "assets", "ldlib2", "resources"))
+  .filter((file) => file.replaceAll("\\", "/").endsWith(".ui.nbt"));
+if (uiExamples.length === 0) {
+  throw new Error("LDLib2 built-in UI resources must be packaged under assets/ldlib2/resources.");
+}
+
 const commonsFunctionReferences = walk(path.join(root, "common", "src", "main"))
   .filter((file) => /\.(java|kt)$/.test(file))
   .filter((file) => fs.readFileSync(file, "utf8").includes("org.apache.commons.lang3.function"));
