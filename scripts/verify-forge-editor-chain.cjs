@@ -71,6 +71,11 @@ const directScreen = read(directScreenPath);
 assertIncludes(directScreenPath, directScreen, "Initializing LDLib2 modular UI direct screen");
 assertIncludes(directScreenPath, directScreen, "modularUI.setScreenAndInit(this)");
 
+const renderTypesPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/shader/LDLibRenderTypes.java";
+const renderTypes = read(renderTypesPath);
+assertIncludes(renderTypesPath, renderTypes, "GameRenderer.getPositionTexColorShader()");
+assertIncludes(renderTypesPath, renderTypes, "LDLibShaders.getGuiTexture() == null");
+
 const commonsFunctionReferences = walk(path.join(root, "common", "src", "main"))
   .filter((file) => /\.(java|kt)$/.test(file))
   .filter((file) => fs.readFileSync(file, "utf8").includes("org.apache.commons.lang3.function"));

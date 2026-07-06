@@ -3,6 +3,7 @@ package com.lowdragmc.lowdraglib2.client.shader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.Util;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +38,7 @@ public class LDLibRenderTypes extends RenderType {
 
 
     private static final RenderStateShard.ShaderStateShard GUI_TEXTURE_SHADER = new RenderStateShard.ShaderStateShard(
-            LDLibShaders::getGuiTexture);
+            () -> LDLibShaders.getGuiTexture() == null ? GameRenderer.getPositionTexColorShader() : LDLibShaders.getGuiTexture());
 
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize(
             texture -> create(
