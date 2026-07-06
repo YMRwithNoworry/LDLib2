@@ -1,5 +1,6 @@
 package com.lowdragmc.lowdraglib2.gui.holder;
 
+import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -35,6 +36,7 @@ public class ModularUIScreen extends Screen {
 
     @Override
     public void init() {
+        LDLib2.LOGGER.info("Initializing LDLib2 modular UI direct screen");
         this.modularUI.setScreenAndInit(this);
         this.addRenderableWidget(modularUI.getWidget());
         this.leftPos = (int) ((this.width - modularUI.getWidth()) / 2);

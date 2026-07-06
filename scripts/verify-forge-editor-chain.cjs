@@ -39,8 +39,10 @@ assertIncludes(clientCommandsPath, clientCommands, "ClientEditorCommands.openUIE
 const clientEditorPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/ClientEditorCommands.java";
 const clientEditor = read(clientEditorPath);
 assertIncludes(clientEditorPath, clientEditor, "Minecraft.getInstance()");
-assertIncludes(clientEditorPath, clientEditor, "getSingleplayerServer()");
-assertIncludes(clientEditorPath, clientEditor, "PlayerUIMenuType.openUI(serverPlayer, UIEditor.WINDOW_ID)");
+assertIncludes(clientEditorPath, clientEditor, "EditorWindow.open(UIEditor.WINDOW_ID, UIEditor::new)");
+assertIncludes(clientEditorPath, clientEditor, "new ModularUIScreen(editorUI");
+assertIncludes(clientEditorPath, clientEditor, "minecraft.setScreen(screen)");
+assertIncludes(clientEditorPath, clientEditor, "Opening LDLib2 UI editor screen directly");
 
 const menuTypesPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/factory/LDMenuTypes.java";
 const menuTypes = read(menuTypesPath);
@@ -51,6 +53,11 @@ const screenPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/holder/Mo
 const screen = read(screenPath);
 assertIncludes(screenPath, screen, "Initializing LDLib2 modular UI screen");
 assertIncludes(screenPath, screen, "modularUI.setScreenAndInit(this)");
+
+const directScreenPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/holder/ModularUIScreen.java";
+const directScreen = read(directScreenPath);
+assertIncludes(directScreenPath, directScreen, "Initializing LDLib2 modular UI direct screen");
+assertIncludes(directScreenPath, directScreen, "modularUI.setScreenAndInit(this)");
 
 const reflectionPath = "common/src/main/java/com/lowdragmc/lowdraglib2/utils/ReflectionUtils.java";
 const reflection = read(reflectionPath);

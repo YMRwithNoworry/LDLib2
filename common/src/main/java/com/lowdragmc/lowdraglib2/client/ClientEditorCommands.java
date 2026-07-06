@@ -1,11 +1,13 @@
 package com.lowdragmc.lowdraglib2.client;
 
 import com.lowdragmc.lowdraglib2.LDLib2;
+import com.lowdragmc.lowdraglib2.editor.ui.EditorWindow;
 import com.lowdragmc.lowdraglib2.gui.editor.UIEditor;
-import com.lowdragmc.lowdraglib2.gui.factory.PlayerUIMenuType;
+import com.lowdragmc.lowdraglib2.gui.holder.ModularUIScreen;
+import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
+import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -16,30 +18,20 @@ public final class ClientEditorCommands {
 
     public static int openUIEditor() {
         var minecraft = Minecraft.getInstance();
-        var server = minecraft.getSingleplayerServer();
         var clientPlayer = minecraft.player;
-        if (server == null || clientPlayer == null || !server.isSingleplayer()) {
-            sendClientMessage("This command can only be used in singleplayer");
-            LDLib2.LOGGER.warn("Failed to open LDLib2 UI editor from client command: no singleplayer server or client player");
+        if (clientPlayer == null) {
+            sendClientMessage("Failed to open LDLib2 UI editor: client player is not ready");
+            LDLib2.LOGGER.warn("Failed to open LDLib2 UI editor from client command: client player is not ready");
             return 0;
         }
 
-        LDLib2.LOGGER.info("Requesting LDLib2 UI editor open from client command for {}", clientPlayer.getGameProfile().getName());
-        server.execute(() -> {
-            ServerPlayer serverPlayer = server.getPlayerList().getPlayer(clientPlayer.getUUID());
-            if (serverPlayer == null) {
-                sendClientMessage("Failed to open LDLib2 UI editor: server player is not ready");
-                LDLib2.LOGGER.warn("Failed to open LDLib2 UI editor from client command: server player is not ready");
-                return;
-            }
-            if (!PlayerUIMenuType.openUI(serverPlayer, UIEditor.WINDOW_ID)) {
-                sendClientMessage("Failed to open LDLib2 UI editor: player UI holder is not registered");
-                LDLib2.LOGGER.warn("Failed to open LDLib2 UI editor from client command for {}: player UI holder is not registered",
-                        serverPlayer.getGameProfile().getName());
-            } else {
-                LDLib2.LOGGER.info("Opened LDLib2 UI editor for {} from client command", serverPlayer.getGameProfile().getName());
-            }
-        });
+        var editorUI = new ModularUI(UI.of(EditorWindow.open(UIEditor.WINDOW_ID, UIEditor::new)))
+                .shouldCloseOnEsc(false)
+                .shouldCloseOnKeyInventory(false);
+        var screen = new ModularUIScreen(editorUI, Component.translatable(UIEditor.WINDOW_ID.toLanguageKey()));
+        LDLib2.LOGGER.info("Opening LDLib2 UI editor screen directly for {}", clientPlayer.getGameProfile().getName());
+        minecraft.setScreen(screen);
+        LDLib2.LOGGER.info("Opened LDLib2 UI editor screen directly for {}", clientPlayer.getGameProfile().getName());
         return 1;
     }
 
