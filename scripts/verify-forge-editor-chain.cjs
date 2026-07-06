@@ -24,9 +24,9 @@ if (forgeEntry.includes("MenuScreens.register(") || forgeEntry.includes("registe
 
 const clientCommandsPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/ClientCommands.java";
 const clientCommands = read(clientCommandsPath);
-assertIncludes(clientCommandsPath, clientCommands, 'createLiteral("ldlib2_client")');
+assertIncludes(clientCommandsPath, clientCommands, 'createLDLib2ClientCommand("ldlib2_client")');
 assertIncludes(clientCommandsPath, clientCommands, 'createLiteral("ui_editor")');
-assertIncludes(clientCommandsPath, clientCommands, 'createLiteral("ldlib2_ui_editor")');
+assertIncludes(clientCommandsPath, clientCommands, 'createUIEditorCommand("ldlib2_ui_editor")');
 assertIncludes(clientCommandsPath, clientCommands, "ClientEditorCommands.openUIEditor()");
 
 const clientEditorPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/ClientEditorCommands.java";
@@ -44,5 +44,11 @@ const screenPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/holder/Mo
 const screen = read(screenPath);
 assertIncludes(screenPath, screen, "Initializing LDLib2 modular UI screen");
 assertIncludes(screenPath, screen, "modularUI.setScreenAndInit(this)");
+
+const packMetaPath = "common/src/main/resources/pack.mcmeta";
+const packMeta = JSON.parse(read(packMetaPath));
+if (packMeta.pack?.pack_format !== 15) {
+  throw new Error(`${packMetaPath} must declare pack_format 15 for Minecraft 1.20.1.`);
+}
 
 console.log("Forge editor opening chain is wired.");

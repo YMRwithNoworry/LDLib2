@@ -25,7 +25,13 @@ public class ClientCommands {
 
     public static List<LiteralArgumentBuilder<CommandSourceStack>> createClientCommands() {
         var commands = new ArrayList<LiteralArgumentBuilder<CommandSourceStack>>();
-        commands.add(createLiteral("ldlib2_client")
+        commands.add(createLDLib2ClientCommand("ldlib2_client"));
+        commands.add(createUIEditorCommand("ldlib2_ui_editor"));
+        return commands;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> createLDLib2ClientCommand(String command) {
+        return createLiteral(command)
                 .executes(context -> ClientEditorCommands.openUIEditor())
                 .then(createLiteral("ui_editor")
                         .executes(context -> ClientEditorCommands.openUIEditor()))
@@ -34,9 +40,11 @@ public class ClientCommands {
                             LDLibShaders.reload();
                             ShaderManager.getInstance().reload();
                             return 1;
-                        })));
-        commands.add(createLiteral("ldlib2_ui_editor")
-                .executes(context -> ClientEditorCommands.openUIEditor()));
-        return commands;
+                        }));
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> createUIEditorCommand(String command) {
+        return createLiteral(command)
+                .executes(context -> ClientEditorCommands.openUIEditor());
     }
 }
