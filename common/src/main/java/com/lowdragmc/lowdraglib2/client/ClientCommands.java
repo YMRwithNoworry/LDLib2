@@ -25,12 +25,16 @@ public class ClientCommands {
 
     public static List<LiteralArgumentBuilder<CommandSourceStack>> createClientCommands() {
         var commands = new ArrayList<LiteralArgumentBuilder<CommandSourceStack>>();
-        commands.add(createLiteral("ldlib2_client").then(createLiteral("reload_shader")
-                .executes(context -> {
-                    LDLibShaders.reload();
-                    ShaderManager.getInstance().reload();
-                    return 1;
-                })));
+        commands.add(createLiteral("ldlib2_client")
+                .executes(context -> ClientEditorCommands.openUIEditor())
+                .then(createLiteral("ui_editor")
+                        .executes(context -> ClientEditorCommands.openUIEditor()))
+                .then(createLiteral("reload_shader")
+                        .executes(context -> {
+                            LDLibShaders.reload();
+                            ShaderManager.getInstance().reload();
+                            return 1;
+                        })));
         commands.add(createLiteral("ldlib2_ui_editor")
                 .executes(context -> ClientEditorCommands.openUIEditor()));
         return commands;
