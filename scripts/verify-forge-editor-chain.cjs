@@ -31,7 +31,13 @@ const forgeEntry = read(forgeEntryPath);
 assertIncludes(forgeEntryPath, forgeEntry, "ClientProxy.registerCommonClientHooks();");
 assertIncludes(forgeEntryPath, forgeEntry, "registerMenuScreens();");
 assertIncludes(forgeEntryPath, forgeEntry, "MinecraftForge.EVENT_BUS.addListener(LDLib2Forge::registerClientCommands);");
+assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerShaders);");
+assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerTooltipComponents);");
+assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerClientReloadListeners);");
+assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerAdditionalModels);");
 assertIncludes(forgeEntryPath, forgeEntry, "Registering LDLib2 Forge menu screens");
+assertIncludes(forgeEntryPath, forgeEntry, "Registering LDLib2 Forge shaders");
+assertIncludes(forgeEntryPath, forgeEntry, "LDLibShaders.registerShaders(event.getResourceProvider(), event::registerShader)");
 assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new)");
 assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new)");
 assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new)");
@@ -75,6 +81,12 @@ const renderTypesPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/s
 const renderTypes = read(renderTypesPath);
 assertIncludes(renderTypesPath, renderTypes, "GameRenderer.getPositionTexColorShader()");
 assertIncludes(renderTypesPath, renderTypes, "LDLibShaders.getGuiTexture() == null");
+
+const spriteTexturePath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/texture/SpriteTexture.java";
+const spriteTexture = read(spriteTexturePath);
+assertIncludes(spriteTexturePath, spriteTexture, "LDLibShaders.getSpriteBlitShader()");
+assertIncludes(spriteTexturePath, spriteTexture, "if (shader == null)");
+assertIncludes(spriteTexturePath, spriteTexture, "drawWrappedQuads(buffer, matrix");
 
 const commonsFunctionReferences = walk(path.join(root, "common", "src", "main"))
   .filter((file) => /\.(java|kt)$/.test(file))

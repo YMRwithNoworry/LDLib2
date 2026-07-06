@@ -288,8 +288,6 @@ public class SpriteTexture extends TransformTexture {
                 drawQuad(buffer, matrix, x + borderLeft, y + borderTop, centerWidth, centerHeight,
                         uCenterStart, vCenterStart, uCenterEnd, vCenterEnd, color);
             } else {
-                graphics.flush();
-
                 // wrap mode
                 var centerSpriteWidth = spriteSize.getWidth() - borderLeft - borderRight;
                 var centerSpriteHeight = spriteSize.getHeight() - borderTop - borderBottom;
@@ -297,12 +295,20 @@ public class SpriteTexture extends TransformTexture {
                     return;
                 }
 
-                // Risky?
+                var shader = LDLibShaders.getSpriteBlitShader();
+                if (shader == null) {
+                    drawWrappedQuads(buffer, matrix,
+                            x + borderLeft, y + borderTop, centerWidth, centerHeight,
+                            centerSpriteWidth, centerSpriteHeight,
+                            uCenterStart, vCenterStart, uCenterEnd, vCenterEnd, color);
+                    return;
+                }
+
+                graphics.flush();
                 RenderSystem.setShader(LDLibShaders::getSpriteBlitShader);
                 RenderSystem.setShaderTexture(0, imageLocation);
                 var buffer2 = Tesselator.getInstance().getBuilder();
                 buffer2.begin(VertexFormat.Mode.QUADS, POSITION_TEX_COLOR);
-                var shader = LDLibShaders.getSpriteBlitShader();
                 shader.safeGetUniform("UVBounds").set(uCenterStart, vCenterStart, uCenterEnd, vCenterEnd);
                 shader.safeGetUniform("WrapMode").set(wrapMode.ordinal());
 
@@ -313,6 +319,30 @@ public class SpriteTexture extends TransformTexture {
 
                 // draw border first
                 BufferUploader.drawWithShader(buffer2.end());
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void drawWrappedQuads(VertexConsumer buffer, Matrix4f matrix,
+                                  float x, float y, float width, float height,
+                                  float tileWidth, float tileHeight,
+                                  float uStart, float vStart, float uEnd, float vEnd, int color) {
+        float vRange = vEnd - vStart;
+        float uRange = uEnd - uStart;
+        int tileY = 0;
+        for (float dy = 0; dy < height; dy += tileHeight, tileY++) {
+            float h = Math.min(tileHeight, height - dy);
+            boolean flipV = wrapMode == WrapMode.MIRRORED_REPEAT && (tileY & 1) == 1;
+            float v1 = flipV ? vEnd : vStart;
+            float v2 = flipV ? vEnd - h / tileHeight * vRange : vStart + h / tileHeight * vRange;
+            int tileX = 0;
+            for (float dx = 0; dx < width; dx += tileWidth, tileX++) {
+                float w = Math.min(tileWidth, width - dx);
+                boolean flipU = wrapMode == WrapMode.MIRRORED_REPEAT && (tileX & 1) == 1;
+                float u1 = flipU ? uEnd : uStart;
+                float u2 = flipU ? uEnd - w / tileWidth * uRange : uStart + w / tileWidth * uRange;
+                drawQuad(buffer, matrix, x + dx, y + dy, w, h, u1, v1, u2, v2, color);
             }
         }
     }
