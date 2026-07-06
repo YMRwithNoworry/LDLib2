@@ -6,6 +6,9 @@ import com.lowdragmc.lowdraglib2.gui.texture.Icons;
 import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.texture.UIResourceTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
+import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.MCSprites;
+import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.OreSprites;
+import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.Sprites;
 import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtOps;
@@ -18,7 +21,9 @@ public class TexturesResource extends Resource<IGuiTexture> {
     @Override
     public void buildBuiltin(ResourceInstance<IGuiTexture> resourceInstance) {
         super.buildBuiltin(resourceInstance);
-//        resourceInstance.addBuiltinProvider(Sprites.getProvider(resourceInstance));
+        Sprites.init(resourceInstance);
+        MCSprites.init(resourceInstance);
+        OreSprites.init(resourceInstance);
     }
 
     @Override

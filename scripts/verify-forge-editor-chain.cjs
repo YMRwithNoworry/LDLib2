@@ -88,6 +88,16 @@ assertIncludes(spriteTexturePath, spriteTexture, "LDLibShaders.getSpriteBlitShad
 assertIncludes(spriteTexturePath, spriteTexture, "if (shader == null)");
 assertIncludes(spriteTexturePath, spriteTexture, "drawWrappedQuads(buffer, matrix");
 
+const texturesResourcePath = "common/src/main/java/com/lowdragmc/lowdraglib2/editor/resource/TexturesResource.java";
+const texturesResource = read(texturesResourcePath);
+assertIncludes(texturesResourcePath, texturesResource, "Sprites.init(resourceInstance);");
+assertIncludes(texturesResourcePath, texturesResource, "MCSprites.init(resourceInstance);");
+assertIncludes(texturesResourcePath, texturesResource, "OreSprites.init(resourceInstance);");
+
+const modLoaderShimPath = "common/src/main/java/net/neoforged/fml/ModLoader.java";
+const modLoaderShim = read(modLoaderShimPath);
+assertIncludes(modLoaderShimPath, modLoaderShim, "return event.isCanceled();");
+
 const commonsFunctionReferences = walk(path.join(root, "common", "src", "main"))
   .filter((file) => /\.(java|kt)$/.test(file))
   .filter((file) => fs.readFileSync(file, "utf8").includes("org.apache.commons.lang3.function"));
