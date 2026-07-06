@@ -4,6 +4,10 @@ architectury {
 
 loom {
     accessWidenerPath = file("src/main/resources/ldlib2.accesswidener")
+    mixin {
+        useLegacyMixinAp = true
+        defaultRefmapName = "ldlib2-refmap.json"
+    }
 }
 
 sourceSets {
@@ -19,9 +23,11 @@ sourceSets {
             exclude "com/lowdragmc/lowdraglib2/client/utils/MeshDataSorter.java"
             exclude "com/lowdragmc/lowdraglib2/client/utils/MeshDataSortResult.java"
             exclude "com/lowdragmc/lowdraglib2/core/mixins/accessor/MeshDataAccessor.java"
+            exclude "com/lowdragmc/lowdraglib2/core/mixins/accessor/ObjModelAccessor.java"
             exclude "com/lowdragmc/lowdraglib2/core/mixins/emi/**"
             exclude "com/lowdragmc/lowdraglib2/core/mixins/kjs/ServerScriptManagerAccessor.java"
             exclude "com/lowdragmc/lowdraglib2/core/mixins/BlockStateModelLoaderMixin.java"
+            exclude "com/lowdragmc/lowdraglib2/core/mixins/ObjModelMixin.java"
             exclude "com/lowdragmc/lowdraglib2/core/mixins/SpriteSourceListMixin.java"
         }
     }
