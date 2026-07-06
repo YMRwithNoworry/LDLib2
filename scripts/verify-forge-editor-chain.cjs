@@ -45,6 +45,15 @@ const screen = read(screenPath);
 assertIncludes(screenPath, screen, "Initializing LDLib2 modular UI screen");
 assertIncludes(screenPath, screen, "modularUI.setScreenAndInit(this)");
 
+const reflectionPath = "common/src/main/java/com/lowdragmc/lowdraglib2/utils/ReflectionUtils.java";
+const reflection = read(reflectionPath);
+assertIncludes(reflectionPath, reflection, "Path.of(resource.toURI()).toString()");
+assertIncludes(reflectionPath, reflection, "URI.create(\"file:\" + stripJarIndex(jarPath))");
+assertIncludes(reflectionPath, reflection, "encodedFragment");
+if (reflection.includes("URLDecoder.decode")) {
+  throw new Error(`${reflectionPath} must not use URLDecoder.decode for jar paths; it turns + into spaces.`);
+}
+
 const packMetaPath = "common/src/main/resources/pack.mcmeta";
 const packMeta = JSON.parse(read(packMetaPath));
 if (packMeta.pack?.pack_format !== 15) {

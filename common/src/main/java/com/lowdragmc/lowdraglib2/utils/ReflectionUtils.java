@@ -13,8 +13,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -247,7 +247,7 @@ public final class ReflectionUtils {
 
     private static void scanResource(URL resource, String packagePath, String annotationDescriptor, MutableRuntimeAnnotationTargets targets) throws Exception {
         switch (resource.getProtocol()) {
-            case "file" -> scanDirectory(URLDecoder.decode(resource.getPath(), StandardCharsets.UTF_8), annotationDescriptor, targets);
+            case "file" -> scanDirectory(Path.of(resource.toURI()).toString(), annotationDescriptor, targets);
             case "jar" -> scanJar(((JarURLConnection) resource.openConnection()).getJarFile(), packagePath, annotationDescriptor, targets);
             default -> {
                 var path = resource.toString().replace('\\', '/');
@@ -263,12 +263,7 @@ public final class ReflectionUtils {
                     if (jarPath.startsWith("file:")) {
                         jarPath = jarPath.substring(5);
                     }
-                    jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8);
-                    var fragment = jarPath.indexOf('#');
-                    if (fragment >= 0) {
-                        jarPath = jarPath.substring(0, fragment);
-                    }
-                    var file = new java.io.File(jarPath);
+                    var file = Path.of(URI.create("file:" + stripJarIndex(jarPath))).toFile();
                     if (file.isDirectory()) {
                         scanDirectory(new java.io.File(file, packagePath).getPath(), annotationDescriptor, targets);
                     } else {
@@ -277,6 +272,19 @@ public final class ReflectionUtils {
                 }
             }
         }
+    }
+
+    private static String stripJarIndex(String jarPath) {
+        var fragment = jarPath.indexOf('#');
+        var encodedFragment = jarPath.toLowerCase(java.util.Locale.ROOT).indexOf("%23");
+        var end = jarPath.length();
+        if (fragment >= 0) {
+            end = Math.min(end, fragment);
+        }
+        if (encodedFragment >= 0) {
+            end = Math.min(end, encodedFragment);
+        }
+        return jarPath.substring(0, end);
     }
 
     private static void scanDirectory(String directoryPath, String annotationDescriptor, MutableRuntimeAnnotationTargets targets) {
