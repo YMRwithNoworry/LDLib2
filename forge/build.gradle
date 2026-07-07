@@ -10,6 +10,7 @@ architectury {
 loom {
     forge {
         mixinConfig "ldlib2.mixins.json"
+        mixinConfig "ldlib2-forge.mixins.json"
     }
     mixin {
         defaultRefmapName = "ldlib2-forge-refmap.json"
