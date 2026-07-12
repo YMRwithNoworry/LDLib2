@@ -243,6 +243,14 @@ public class PortModel extends GraphElementModel implements IPort, IHasDisplayNa
 
     public void setDataTypeHandle(TypeHandle dataTypeHandle) {
         if (Objects.equals(this.dataTypeHandle, dataTypeHandle)) return;
+        // Wires persist port endpoints by UID, and this UID includes the data type.
+        // Keep the graph index keyed by the UID that will be recreated on load.
+        var newUid = computePortUid(nodeModel, direction, portId, portType, dataTypeHandle, parentPort);
+        if (!newUid.equals(getUid())) {
+            if (graphModel != null) graphModel.unregisterPort(this);
+            setUid(newUid);
+            if (graphModel != null) graphModel.registerPort(this);
+        }
         this.dataTypeHandle = dataTypeHandle;
         this.dataTypeCache = null;
         if (isPolymorphic() && !isAscendable()) {
