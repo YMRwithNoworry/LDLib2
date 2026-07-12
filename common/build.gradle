@@ -46,6 +46,9 @@ dependencies {
     compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-common:${rootProject.jei_version}") { transitive = false }
     compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-core:${rootProject.jei_version}") { transitive = false }
     compileOnly("mezz.jei:jei-${rootProject.minecraft_version}-gui:${rootProject.jei_version}") { transitive = false }
+    // KubeJS/Rhino annotations are referenced by the UI API but must not be bundled.
+    // KubeJS supplies Rhino at runtime when the optional integration is installed.
+    compileOnly("dev.latvian.mods:rhino-fabric:${rootProject.rhino_version}") { transitive = false }
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${rootProject.rei_version}")
     modCompileOnly("dev.emi:emi-xplat-intermediary:${rootProject.emi_version}")
 
