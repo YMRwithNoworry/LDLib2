@@ -3,7 +3,6 @@ package com.lowdragmc.lowdraglib2.gui.ui.style;
 import com.lowdragmc.lowdraglib2.editor.ui.SplittableWindow;
 import com.lowdragmc.lowdraglib2.gui.ColorPattern;
 import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib2.gui.texture.Icons;
 import com.lowdragmc.lowdraglib2.gui.ui.data.*;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.*;
 import com.lowdragmc.lowdraglib2.gui.ui.layout.LayoutProperties;
@@ -173,7 +172,7 @@ public final class PropertyRegistry {
     public static final Property<IGuiTexture> NODE_HOVER_BACKGROUND = create("node-hover-background", ColorPattern.BLUE.rectTexture());
     public static final Property<IGuiTexture> LEAF_BACKGROUND = create("leaf-background", IGuiTexture.EMPTY);
     public static final Property<IGuiTexture> LEAF_HOVER_BACKGROUND = create("leaf-hover-background", ColorPattern.BLUE.rectTexture());
-    public static final Property<IGuiTexture> ARROW = create("arrow", Icons.RIGHT_ARROW_NO_BAR_S_WHITE);
+    public static final Property<IGuiTexture> ARROW = create("arrow", IGuiTexture.EMPTY);
 
     public static final Property<FillDirection> FILL_DIRECTION = create("fill-direction", FillDirection.class, FillDirection.ALWAYS_FULL);
     public static final Property<Boolean> INTERPOLATE = create("interpolate", true);

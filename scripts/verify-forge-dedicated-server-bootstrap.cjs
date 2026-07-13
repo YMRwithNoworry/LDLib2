@@ -4,7 +4,9 @@ const path = require("path");
 const root = path.resolve(__dirname, "..");
 const forgeEntryPath = "forge/src/main/java/com/lowdragmc/lowdraglib2/forge/LDLib2Forge.java";
 const forgeClientPath = "forge/src/main/java/com/lowdragmc/lowdraglib2/forge/client/ForgeClientBootstrap.java";
+const propertyRegistryPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/ui/style/PropertyRegistry.java";
 const forgeEntry = fs.readFileSync(path.join(root, forgeEntryPath), "utf8");
+const propertyRegistry = fs.readFileSync(path.join(root, propertyRegistryPath), "utf8");
 
 function assert(condition, message) {
   if (!condition) {
@@ -31,6 +33,10 @@ assert(
   fs.existsSync(path.join(root, forgeClientPath)),
   `${forgeClientPath} must contain the client-only Forge listeners`,
 );
+assert(
+  !propertyRegistry.includes("Icons."),
+  `${propertyRegistryPath} must not initialize client-only icon textures on a dedicated server`,
+);
 
 const compiledEntry = path.join(
   root,
@@ -46,4 +52,16 @@ if (fs.existsSync(compiledEntry)) {
   }
 }
 
-console.log("Forge mod entrypoint is isolated from client-only classes.");
+const compiledPropertyRegistry = path.join(
+  root,
+  "common/build/classes/java/main/com/lowdragmc/lowdraglib2/gui/ui/style/PropertyRegistry.class",
+);
+if (fs.existsSync(compiledPropertyRegistry)) {
+  const bytecode = fs.readFileSync(compiledPropertyRegistry).toString("latin1");
+  assert(
+    !bytecode.includes("com/lowdragmc/lowdraglib2/gui/texture/Icons"),
+    "Compiled PropertyRegistry.class must not initialize client-only Icons",
+  );
+}
+
+console.log("Forge common bootstrap is isolated from client-only classes.");
