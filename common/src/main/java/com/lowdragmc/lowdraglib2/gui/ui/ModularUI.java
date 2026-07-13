@@ -649,8 +649,8 @@ public class ModularUI {
             focus.relatedTarget = lastFocusedElement;
             focus.hasBubblePhase = false;
             UIEventDispatcher.dispatchEvent(focus);
-            if (screen != null) {
-                screen.setFocused(getWidget());
+            if (LDLib2.isClient()) {
+                ModularUIClientAccess.focusScreen(this);
             }
         }
 
