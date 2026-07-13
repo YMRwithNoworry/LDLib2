@@ -1,5 +1,7 @@
 package com.lowdragmc.lowdraglib2.client.renderer;
 
+import com.lowdragmc.lowdraglib2.client.renderer.block.RendererBlock;
+import com.lowdragmc.lowdraglib2.client.renderer.block.RendererBlockRenderer;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
@@ -12,6 +14,20 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public interface IBlockRendererProvider {
+
+    @Nullable
+    static IRenderer resolveRenderer(@Nullable BlockState state) {
+        if (state == null) {
+            return null;
+        }
+        if (state.getBlock() == RendererBlock.BLOCK) {
+            return RendererBlockRenderer.INSTANCE;
+        }
+        if (state.getBlock() instanceof IBlockRendererProvider rendererProvider) {
+            return rendererProvider.getRenderer(state);
+        }
+        return null;
+    }
 
     /**
      * Get the renderer for the block state.

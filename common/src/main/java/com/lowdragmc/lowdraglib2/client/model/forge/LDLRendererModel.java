@@ -110,8 +110,8 @@ public class LDLRendererModel implements IUnbakedGeometry<LDLRendererModel> {
             var world = data.get(WORLD);
             var pos = data.get(POS);
             var modelData = data.get(MODEL_DATA);
-            if (renderer == null && state != null && state.getBlock() instanceof IBlockRendererProvider rendererProvider) {
-                renderer = rendererProvider.getRenderer(state);
+            if (renderer == null) {
+                renderer = IBlockRendererProvider.resolveRenderer(state);
             }
             if (renderer != null) {
                 return renderer.renderModel(world, pos, state, side, rand, modelData, renderType);
@@ -120,27 +120,23 @@ public class LDLRendererModel implements IUnbakedGeometry<LDLRendererModel> {
         }
 
         public TriState useAmbientOcclusion(BlockState state, ModelData data, RenderType renderType) {
-            if (state.getBlock() instanceof IBlockRendererProvider rendererProvider) {
-                IRenderer renderer = rendererProvider.getRenderer(state);
-                if (renderer != null) {
-                    return renderer.useAO(state, data, renderType);
-                }
+            IRenderer renderer = IBlockRendererProvider.resolveRenderer(state);
+            if (renderer != null) {
+                return renderer.useAO(state, data, renderType);
             }
             return TriState.DEFAULT;
         }
 
 
         public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData modelData) {
-            if (state.getBlock() instanceof IBlockRendererProvider rendererProvider) {
-                IRenderer renderer = rendererProvider.getRenderer(state);
-                if (renderer != null) {
-                    modelData = ModelData.builder()
-                            .with(RENDERER, renderer)
-                            .with(WORLD, level)
-                            .with(POS, pos)
-                            .with(MODEL_DATA, modelData)
-                            .build();
-                }
+            IRenderer renderer = IBlockRendererProvider.resolveRenderer(state);
+            if (renderer != null) {
+                modelData = ModelData.builder()
+                        .with(RENDERER, renderer)
+                        .with(WORLD, level)
+                        .with(POS, pos)
+                        .with(MODEL_DATA, modelData)
+                        .build();
             }
             return modelData;
         }

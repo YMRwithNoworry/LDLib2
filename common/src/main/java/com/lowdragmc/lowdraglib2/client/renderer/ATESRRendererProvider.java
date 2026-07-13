@@ -60,9 +60,7 @@ public class ATESRRendererProvider<T extends BlockEntity> implements BlockEntity
         Level world = blockEntity.getLevel();
         if (world != null) {
             BlockState state = blockEntity.getBlockState();
-            if (state.getBlock() instanceof IBlockRendererProvider blockRendererProvider) {
-                return blockRendererProvider.getRenderer(state);
-            }
+            return IBlockRendererProvider.resolveRenderer(state);
         }
         return null;
     }

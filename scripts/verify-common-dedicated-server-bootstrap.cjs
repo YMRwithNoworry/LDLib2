@@ -44,6 +44,28 @@ for (const clientType of ["Icons", "ColorConfigurator", "IConfigurable"]) {
   assertExcludes(typeHandlesPath, typeHandles, clientType);
 }
 
+const rendererBlockPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/renderer/block/RendererBlock.java";
+const rendererBlock = read(rendererBlockPath);
+for (const clientRendererType of ["IBlockRendererProvider", "IRenderer", "RendererBlockRenderer"]) {
+  assertExcludes(rendererBlockPath, rendererBlock, clientRendererType);
+}
+
+const rendererBlockEntityPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/renderer/block/RendererBlockEntity.java";
+const rendererBlockEntity = read(rendererBlockEntityPath);
+assertExcludes(rendererBlockEntityPath, rendererBlockEntity, "IRenderer");
+
+const rendererProviderPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/renderer/IBlockRendererProvider.java";
+const rendererProvider = read(rendererProviderPath);
+assertIncludes(rendererProviderPath, rendererProvider, "state.getBlock() == RendererBlock.BLOCK");
+assertIncludes(rendererProviderPath, rendererProvider, "return RendererBlockRenderer.INSTANCE;");
+
+for (const rendererConsumerPath of [
+  "common/src/main/java/com/lowdragmc/lowdraglib2/client/renderer/ATESRRendererProvider.java",
+  "common/src/main/java/com/lowdragmc/lowdraglib2/client/model/forge/LDLRendererModel.java",
+]) {
+  assertIncludes(rendererConsumerPath, read(rendererConsumerPath), "IBlockRendererProvider.resolveRenderer(state)");
+}
+
 const compiledChecks = [
   [
     "common/build/classes/java/main/com/lowdragmc/lowdraglib2/CommonProxy.class",
@@ -56,6 +78,14 @@ const compiledChecks = [
   [
     "common/build/classes/java/main/com/lowdragmc/lowdraglib2/nodegraphtookit/api/type/TypeHandles.class",
     ["gui/texture/Icons", "ColorConfigurator", "net/minecraft/client/", "com/mojang/blaze3d/"],
+  ],
+  [
+    "common/build/classes/java/main/com/lowdragmc/lowdraglib2/client/renderer/block/RendererBlock.class",
+    ["IBlockRendererProvider", "IRenderer", "RendererBlockRenderer", "net/minecraft/client/", "com/mojang/blaze3d/"],
+  ],
+  [
+    "common/build/classes/java/main/com/lowdragmc/lowdraglib2/client/renderer/block/RendererBlockEntity.class",
+    ["IRenderer", "net/minecraft/client/", "com/mojang/blaze3d/"],
   ],
 ];
 
