@@ -59,6 +59,11 @@ const rendererProvider = read(rendererProviderPath);
 assertIncludes(rendererProviderPath, rendererProvider, "state.getBlock() == RendererBlock.BLOCK");
 assertIncludes(rendererProviderPath, rendererProvider, "return RendererBlockRenderer.INSTANCE;");
 
+const spritesPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/ui/styletemplate/Sprites.java";
+const sprites = read(spritesPath);
+assertIncludes(spritesPath, sprites, "if (!LDLib2.isClient()) return IGuiTexture.EMPTY;");
+assertIncludes(spritesPath, sprites, "return ClientSprites.create(");
+
 for (const rendererConsumerPath of [
   "common/src/main/java/com/lowdragmc/lowdraglib2/client/renderer/ATESRRendererProvider.java",
   "common/src/main/java/com/lowdragmc/lowdraglib2/client/model/forge/LDLRendererModel.java",
@@ -86,6 +91,10 @@ const compiledChecks = [
   [
     "common/build/classes/java/main/com/lowdragmc/lowdraglib2/client/renderer/block/RendererBlockEntity.class",
     ["IRenderer", "net/minecraft/client/", "com/mojang/blaze3d/"],
+  ],
+  [
+    "common/build/classes/java/main/com/lowdragmc/lowdraglib2/gui/ui/styletemplate/Sprites.class",
+    ["gui/texture/SpriteTexture", "net/minecraft/client/", "com/mojang/blaze3d/"],
   ],
 ];
 
