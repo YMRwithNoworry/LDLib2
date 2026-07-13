@@ -85,9 +85,17 @@ processResources {
     }
 }
 
+tasks.register("removeLegacyDevelopmentJars", Delete) {
+    delete fileTree(layout.buildDirectory.dir("libs")) {
+        include "*-dev-shadow.jar"
+    }
+}
+
 shadowJar {
+    dependsOn tasks.named("removeLegacyDevelopmentJars")
     configurations = [project.configurations.shadowBundle]
     archiveClassifier = "dev-shadow"
+    destinationDirectory.set(layout.buildDirectory.dir("intermediates/shadow"))
     exclude "javax/annotation/**"
     exclude "edu/umd/cs/findbugs/**"
     exclude "org/jetbrains/annotations/**"
@@ -113,6 +121,12 @@ tasks.register("verifyRemappedJarContents") {
 
     doLast {
         def outputJar = remapJar.archiveFile.get().asFile
+        def leakedDevelopmentJars = fileTree(layout.buildDirectory.dir("libs")) {
+            include "*-dev-shadow.jar"
+        }.files
+        if (!leakedDevelopmentJars.isEmpty()) {
+            throw new GradleException("Development jars must not be published in build/libs: ${leakedDevelopmentJars*.name.join(', ')}")
+        }
         new java.util.jar.JarFile(outputJar).withCloseable { archive ->
             def missingEntries = requiredRuntimeClasses.findAll { archive.getEntry(it) == null }
             if (!missingEntries.isEmpty()) {
