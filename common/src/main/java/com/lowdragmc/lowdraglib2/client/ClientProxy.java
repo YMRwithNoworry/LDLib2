@@ -9,8 +9,14 @@ import com.lowdragmc.lowdraglib2.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib2.client.shader.LDLibShaders;
 import com.lowdragmc.lowdraglib2.editor.resource.IRendererResource;
 import com.lowdragmc.lowdraglib2.editor.resource.PackResourceManager;
+import com.lowdragmc.lowdraglib2.editor.ui.EditorWindow;
+import com.lowdragmc.lowdraglib2.gui.editor.UIEditor;
 import com.lowdragmc.lowdraglib2.gui.factory.LDMenuTypes;
+import com.lowdragmc.lowdraglib2.gui.factory.PlayerUIMenuType;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerScreen;
+import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
+import com.lowdragmc.lowdraglib2.gui.ui.UI;
+import com.lowdragmc.lowdraglib2.gui.ui.style.PropertyRegistry;
 import com.lowdragmc.lowdraglib2.gui.ui.style.StylesheetManager;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUIClientElementComponent;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUITooltipComponent;
@@ -84,6 +90,16 @@ public class ClientProxy {
             return;
         }
         commonClientRegistered = true;
+        PropertyRegistry.init();
+        TypeHandleClientBootstrap.init();
+        PlayerUIMenuType.register(UIEditor.WINDOW_ID, ignored -> player -> {
+            if (player.level().isClientSide) {
+                return new ModularUI(UI.of(EditorWindow.open(UIEditor.WINDOW_ID, UIEditor::new)))
+                        .shouldCloseOnEsc(false)
+                        .shouldCloseOnKeyInventory(false);
+            }
+            return new ModularUI(UI.empty());
+        });
         if (!Platform.isForge()) {
             LDLib2.LOGGER.info("Registering LDLib2 common menu screens");
             MenuRegistry.registerScreenFactory(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new);

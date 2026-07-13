@@ -49,6 +49,8 @@ const clientProxyPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/C
 const clientProxy = read(clientProxyPath);
 assertIncludes(clientProxyPath, clientProxy, "if (!Platform.isForge())");
 assertIncludes(clientProxyPath, clientProxy, "MenuRegistry.registerScreenFactory(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new)");
+assertIncludes(clientProxyPath, clientProxy, "PlayerUIMenuType.register(UIEditor.WINDOW_ID");
+assertIncludes(clientProxyPath, clientProxy, "EditorWindow.open(UIEditor.WINDOW_ID, UIEditor::new)");
 
 const clientCommandsPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/ClientCommands.java";
 const clientCommands = read(clientCommandsPath);
@@ -67,8 +69,7 @@ assertIncludes(clientEditorPath, clientEditor, "Opening LDLib2 UI editor screen 
 
 const menuTypesPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/factory/LDMenuTypes.java";
 const menuTypes = read(menuTypesPath);
-assertIncludes(menuTypesPath, menuTypes, "PlayerUIMenuType.register(UIEditor.WINDOW_ID");
-assertIncludes(menuTypesPath, menuTypes, "EditorWindow.open(UIEditor.WINDOW_ID, UIEditor::new)");
+assertIncludes(menuTypesPath, menuTypes, "MENUS.register()");
 
 const screenPath = "common/src/main/java/com/lowdragmc/lowdraglib2/gui/holder/ModularUIContainerScreen.java";
 const screen = read(screenPath);

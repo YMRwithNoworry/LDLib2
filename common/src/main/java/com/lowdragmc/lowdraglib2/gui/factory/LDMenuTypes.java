@@ -1,11 +1,7 @@
 package com.lowdragmc.lowdraglib2.gui.factory;
 
 import com.lowdragmc.lowdraglib2.LDLib2;
-import com.lowdragmc.lowdraglib2.editor.ui.EditorWindow;
-import com.lowdragmc.lowdraglib2.gui.editor.UIEditor;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerMenu;
-import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
-import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -26,15 +22,6 @@ public final class LDMenuTypes {
             () -> IMenuTypeExtension.create(BlockUIMenuType::create));
 
     public static void init(Object eventBus) {
-        PlayerUIMenuType.register(UIEditor.WINDOW_ID, ignored -> player -> {
-            if (player.level().isClientSide) {
-                return new ModularUI(UI.of(EditorWindow.open(UIEditor.WINDOW_ID, UIEditor::new)))
-                        .shouldCloseOnEsc(false)
-                        .shouldCloseOnKeyInventory(false);
-            }
-            return new ModularUI(UI.empty());
-        });
-
         MENUS.register();
     }
 }

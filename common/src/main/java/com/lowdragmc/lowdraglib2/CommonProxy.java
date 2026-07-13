@@ -3,7 +3,6 @@ package com.lowdragmc.lowdraglib2;
 import com.lowdragmc.lowdraglib2.client.renderer.block.RendererBlock;
 import com.lowdragmc.lowdraglib2.client.renderer.block.RendererBlockEntity;
 import com.lowdragmc.lowdraglib2.gui.factory.LDMenuTypes;
-import com.lowdragmc.lowdraglib2.gui.ui.style.PropertyRegistry;
 import com.lowdragmc.lowdraglib2.networking.LDLNetworking;
 import com.lowdragmc.lowdraglib2.networking.rpc.RPCPacketDistributor;
 import com.lowdragmc.lowdraglib2.nodegraphtookit.api.type.TypeHandles;
@@ -66,7 +65,6 @@ public class CommonProxy {
         AccessorRegistries.init();
         RPCPacketDistributor.init();
         LDLNetworking.init();
-        PropertyRegistry.init();
         LDMenuTypes.init(eventBus);
         TypeHandles.init();
 

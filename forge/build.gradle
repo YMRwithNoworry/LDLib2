@@ -98,3 +98,30 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
 }
+
+def requiredRuntimeClasses = [
+        "com/lowdragmc/lowdraglib2/CommonListeners.class",
+        "com/lowdragmc/lowdraglib2/async/AsyncThreadData.class",
+        "com/lowdragmc/lowdraglib2/async/IAsyncLogic.class"
+]
+
+tasks.register("verifyRemappedJarContents") {
+    group = "verification"
+    description = "Verifies that the remapped Forge jar contains required server runtime classes"
+    dependsOn remapJar
+    inputs.file(remapJar.archiveFile)
+
+    doLast {
+        def outputJar = remapJar.archiveFile.get().asFile
+        new java.util.jar.JarFile(outputJar).withCloseable { archive ->
+            def missingEntries = requiredRuntimeClasses.findAll { archive.getEntry(it) == null }
+            if (!missingEntries.isEmpty()) {
+                throw new GradleException("${outputJar.name} is missing required runtime classes: ${missingEntries.join(', ')}")
+            }
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn tasks.named("verifyRemappedJarContents")
+}
