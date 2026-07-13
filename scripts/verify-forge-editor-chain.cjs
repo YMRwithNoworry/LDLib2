@@ -27,20 +27,23 @@ function walk(dir, results = []) {
 
 const forgeEntryPath = "forge/src/main/java/com/lowdragmc/lowdraglib2/forge/LDLib2Forge.java";
 const forgeEntry = read(forgeEntryPath);
+const forgeClientPath = "forge/src/main/java/com/lowdragmc/lowdraglib2/forge/client/ForgeClientBootstrap.java";
+const forgeClient = read(forgeClientPath);
 
-assertIncludes(forgeEntryPath, forgeEntry, "ClientProxy.registerCommonClientHooks();");
-assertIncludes(forgeEntryPath, forgeEntry, "registerMenuScreens();");
-assertIncludes(forgeEntryPath, forgeEntry, "MinecraftForge.EVENT_BUS.addListener(LDLib2Forge::registerClientCommands);");
-assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerShaders);");
-assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerTooltipComponents);");
-assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerClientReloadListeners);");
-assertIncludes(forgeEntryPath, forgeEntry, "eventBus.addListener(LDLib2Forge::registerAdditionalModels);");
-assertIncludes(forgeEntryPath, forgeEntry, "Registering LDLib2 Forge menu screens");
-assertIncludes(forgeEntryPath, forgeEntry, "Registering LDLib2 Forge shaders");
-assertIncludes(forgeEntryPath, forgeEntry, "LDLibShaders.registerShaders(event.getResourceProvider(), event::registerShader)");
-assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new)");
-assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new)");
-assertIncludes(forgeEntryPath, forgeEntry, "MenuScreens.register(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new)");
+assertIncludes(forgeEntryPath, forgeEntry, "ForgeClientBootstrap::init");
+assertIncludes(forgeClientPath, forgeClient, "ClientProxy.registerCommonClientHooks();");
+assertIncludes(forgeClientPath, forgeClient, "registerMenuScreens();");
+assertIncludes(forgeClientPath, forgeClient, "MinecraftForge.EVENT_BUS.addListener(ForgeClientBootstrap::registerClientCommands);");
+assertIncludes(forgeClientPath, forgeClient, "eventBus.addListener(ForgeClientBootstrap::registerShaders);");
+assertIncludes(forgeClientPath, forgeClient, "eventBus.addListener(ForgeClientBootstrap::registerTooltipComponents);");
+assertIncludes(forgeClientPath, forgeClient, "eventBus.addListener(ForgeClientBootstrap::registerClientReloadListeners);");
+assertIncludes(forgeClientPath, forgeClient, "eventBus.addListener(ForgeClientBootstrap::registerAdditionalModels);");
+assertIncludes(forgeClientPath, forgeClient, "Registering LDLib2 Forge menu screens");
+assertIncludes(forgeClientPath, forgeClient, "Registering LDLib2 Forge shaders");
+assertIncludes(forgeClientPath, forgeClient, "LDLibShaders.registerShaders(event.getResourceProvider(), event::registerShader)");
+assertIncludes(forgeClientPath, forgeClient, "MenuScreens.register(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new)");
+assertIncludes(forgeClientPath, forgeClient, "MenuScreens.register(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new)");
+assertIncludes(forgeClientPath, forgeClient, "MenuScreens.register(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new)");
 
 const clientProxyPath = "common/src/main/java/com/lowdragmc/lowdraglib2/client/ClientProxy.java";
 const clientProxy = read(clientProxyPath);
