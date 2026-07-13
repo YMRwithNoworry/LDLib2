@@ -21,7 +21,6 @@ import com.lowdragmc.lowdraglib2.compat.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryOps;
 import net.neoforged.neoforge.common.CommonHooks;
 import com.lowdragmc.lowdraglib2.compat.INBTSerializable;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -182,7 +181,7 @@ public final class PersistedParser {
         var provider = buf instanceof RegistryFriendlyByteBuf registryBuf ?
                 registryBuf.registryAccess() : Platform.getFrozenRegistry();
         var registryBuf = buf instanceof RegistryFriendlyByteBuf rb ?
-                rb : new RegistryFriendlyByteBuf(buf, provider, ConnectionType.NEOFORGE);
+                rb : new RegistryFriendlyByteBuf(buf, provider);
         writeStreamBuffInternal(true, registryBuf, object.getClass(), object, provider);
     }
 
@@ -204,7 +203,7 @@ public final class PersistedParser {
         var provider = buf instanceof RegistryFriendlyByteBuf registryBuf ?
                 registryBuf.registryAccess() : Platform.getFrozenRegistry();
         var registryBuf = buf instanceof RegistryFriendlyByteBuf rb ?
-                rb : new RegistryFriendlyByteBuf(buf, provider, ConnectionType.NEOFORGE);
+                rb : new RegistryFriendlyByteBuf(buf, provider);
         readStreamBuffInternal(true, registryBuf, new HashMap<>(), object.getClass(), object, provider);
     }
 

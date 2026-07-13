@@ -7,7 +7,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 
 public final class IMenuTypeExtension {
     private IMenuTypeExtension() {
@@ -15,7 +14,7 @@ public final class IMenuTypeExtension {
 
     public static <T extends AbstractContainerMenu> MenuType<T> create(MenuFactory<T> factory) {
         return MenuRegistry.ofExtended((id, inventory, data) ->
-                factory.create(id, inventory, new RegistryFriendlyByteBuf(data, Platform.getFrozenRegistry(), ConnectionType.OTHER)));
+                factory.create(id, inventory, new RegistryFriendlyByteBuf(data, Platform.getFrozenRegistry())));
     }
 
     @FunctionalInterface

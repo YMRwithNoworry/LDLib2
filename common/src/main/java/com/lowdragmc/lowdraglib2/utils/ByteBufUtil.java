@@ -5,7 +5,6 @@ import lombok.experimental.UtilityClass;
 import net.minecraft.core.RegistryAccess;
 import com.lowdragmc.lowdraglib2.compat.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import java.util.function.Consumer;
 
@@ -19,7 +18,7 @@ public final class ByteBufUtil {
      * @param registryAccess The registry access used by registry dependent writers on the buffer
      */
     public static void readCustomData(byte[] data, Consumer<RegistryFriendlyByteBuf> dataWriter, RegistryAccess registryAccess) {
-        final RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), registryAccess, ConnectionType.NEOFORGE);
+        final RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), registryAccess);
         try {
             dataWriter.accept(buf);
         } finally {
@@ -36,7 +35,7 @@ public final class ByteBufUtil {
      * @return The written data.
      */
     public static byte[] writeCustomData(Consumer<RegistryFriendlyByteBuf> dataWriter, RegistryAccess registryAccess) {
-        final RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess, ConnectionType.NEOFORGE);
+        final RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);
         try {
             dataWriter.accept(buf);
             buf.readerIndex(0);

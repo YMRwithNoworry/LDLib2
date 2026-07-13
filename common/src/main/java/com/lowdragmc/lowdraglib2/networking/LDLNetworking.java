@@ -19,7 +19,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -100,11 +99,11 @@ public class LDLNetworking {
     }
 
     private static RegistryFriendlyByteBuf registryBuffer(FriendlyByteBuf buffer) {
-        return new RegistryFriendlyByteBuf(buffer, Platform.getFrozenRegistry(), ConnectionType.OTHER);
+        return new RegistryFriendlyByteBuf(buffer, Platform.getFrozenRegistry());
     }
 
     private static RegistryFriendlyByteBuf registryBuffer(io.netty.buffer.ByteBuf buffer) {
-        return new RegistryFriendlyByteBuf(buffer, Platform.getFrozenRegistry(), ConnectionType.OTHER);
+        return new RegistryFriendlyByteBuf(buffer, Platform.getFrozenRegistry());
     }
 
     private static Class<? extends CustomPacketPayload> payloadClass(CustomPacketPayload.Type<?> type) {

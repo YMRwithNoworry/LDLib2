@@ -9,7 +9,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,7 +44,7 @@ public abstract class MenuTypeMixin<T extends AbstractContainerMenu> {
         NeoForge.EVENT_BUS.post(new ContainerMenuEvent.Create(playerInventory.player, menu));
         if (menu instanceof IModularUIHolder holder) {
             var registryBuf = extraData instanceof RegistryFriendlyByteBuf buf ? buf :
-                    new RegistryFriendlyByteBuf(extraData, playerInventory.player.level().registryAccess(), ConnectionType.NEOFORGE);
+                    new RegistryFriendlyByteBuf(extraData, playerInventory.player.level().registryAccess());
             holder.readInitialData(registryBuf);
         }
     }

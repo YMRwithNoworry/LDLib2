@@ -116,4 +116,23 @@ for (const [relativePath, forbiddenReferences] of compiledChecks) {
   }
 }
 
+const connectionTypeReference = "net/neoforged/neoforge/network/connection/ConnectionType";
+const compiledClassesRoot = path.join(root, "common/build/classes/java/main");
+if (fs.existsSync(compiledClassesRoot)) {
+  const pendingDirectories = [compiledClassesRoot];
+  while (pendingDirectories.length > 0) {
+    const directory = pendingDirectories.pop();
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        pendingDirectories.push(entryPath);
+      } else if (entry.name.endsWith(".class")) {
+        const relativePath = path.relative(root, entryPath).replaceAll("\\", "/");
+        const bytecode = fs.readFileSync(entryPath).toString("latin1");
+        assertExcludes(relativePath, bytecode, connectionTypeReference);
+      }
+    }
+  }
+}
+
 console.log("Common bootstrap does not initialize client-only UI classes on dedicated servers.");
