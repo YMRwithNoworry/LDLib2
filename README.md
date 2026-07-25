@@ -7,8 +7,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/low-drag-mc/ldlib2?style=for-the-badge&logo=github)](https://github.com/Low-Drag-MC/LDLib2/stargazers)
 [![CurseForge downloads](https://img.shields.io/curseforge/dt/626676?style=for-the-badge&logo=curseforge&label=CurseForge)](https://www.curseforge.com/minecraft/mc-mods/ldlib)
 [![Modrinth downloads](https://img.shields.io/modrinth/dt/ldlib?style=for-the-badge&logo=modrinth&label=Modrinth)](https://modrinth.com/mod/ldlib)
-[![Latest Maven version](https://img.shields.io/maven-metadata/v?style=for-the-badge&label=latest&metadataUrl=https%3A%2F%2Fmaven.firstdark.dev%2Fsnapshots%2Fcom%2Flowdragmc%2Fldlib2%2Fldlib2-neoforge-1.21.1%2Fmaven-metadata.xml)](https://maven.firstdark.dev/snapshots/com/lowdragmc/ldlib2/)
-[![NeoForge](https://img.shields.io/badge/NeoForge-21.1+-E04E14?style=for-the-badge)](https://neoforged.net/)
+[![Latest Maven version](https://img.shields.io/maven-metadata/v?style=for-the-badge&label=latest&metadataUrl=https%3A%2F%2Fmaven.firstdark.dev%2Fsnapshots%2Fcom%2Flowdragmc%2Fldlib2%2Fldlib2-forge-1.20.1%2Fmaven-metadata.xml)](https://maven.firstdark.dev/snapshots/com/lowdragmc/ldlib2/)
+[![Minecraft Forge](https://img.shields.io/badge/Forge-1.20.1-E04E14?style=for-the-badge)](https://files.minecraftforge.net/net/minecraftforge/forge/)
 [![License](https://img.shields.io/github/license/low-drag-mc/ldlib2?style=for-the-badge)](LICENSE)
 
 [Documentation](https://low-drag-mc.github.io/LowDragMC-Doc/en/ldlib2/) |
@@ -22,7 +22,7 @@
 
 ---
 
-LDLib2 is a complete rewrite of the original [LDLib](https://github.com/Low-Drag-MC/LDLib-MultiLoader), redesigned around modern Minecraft and NeoForge development. It gives mod authors a higher-level foundation for building UI, in-game tools, renderer-backed content, synchronized data, and persistent runtime systems without rebuilding the same infrastructure in every project.
+LDLib2 is a complete rewrite of the original [LDLib](https://github.com/Low-Drag-MC/LDLib-MultiLoader), redesigned for Minecraft 1.20.1 with Fabric and Forge support. It gives mod authors a higher-level foundation for building UI, in-game tools, renderer-backed content, synchronized data, and persistent runtime systems without rebuilding the same infrastructure in every project.
 
 ## Feature Highlights
 
@@ -75,7 +75,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}:all")
+    implementation("com.lowdragmc.ldlib2:ldlib2-forge-${minecraft_version}:${ldlib2_version}:all")
 }
 ```
 
@@ -83,7 +83,7 @@ For LDLib2 versions before `2.2.1`, disable transitive dependencies and add Yoga
 
 ```gradle
 dependencies {
-    implementation("com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}:all") {
+    implementation("com.lowdragmc.ldlib2:ldlib2-forge-${minecraft_version}:${ldlib2_version}:all") {
         transitive = false
     }
     compileOnly("org.appliedenergistics.yoga:yoga:1.0.0")
@@ -93,8 +93,8 @@ dependencies {
 Recommended project variables:
 
 ```properties
-minecraft_version=1.21.1
-ldlib2_version=2.2.26
+minecraft_version=1.20.1
+ldlib2_version=2.2.27
 ```
 
 ### LDLib Plugin Entry Point
@@ -147,12 +147,12 @@ If you develop with LDLib2, install the LDLib Dev Tool IDEA plugin for editor as
 
 ## Migrating from LDLib
 
-LDLib2 is not a small patch over LDLib. It removes old systems and rebuilds the core architecture for Minecraft `1.21+`.
+LDLib2 is not a small patch over LDLib. It removes old systems and rebuilds the core architecture for Minecraft `1.20.1`.
 
 - Legacy UI and outdated framework pieces have been removed.
 - UI layout, styling, events, and data flow have been redesigned.
 - Documentation and examples are written around the new architecture.
-- Compatibility work focuses on modern NeoForge and current modding integrations.
+- Compatibility work focuses on Fabric, Forge, and current modding integrations.
 
 ## Links
 
