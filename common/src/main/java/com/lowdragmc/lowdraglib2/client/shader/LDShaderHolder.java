@@ -31,8 +31,8 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import com.lowdragmc.lowdraglib2.compat.INBTSerializable;
-import org.appliedenergistics.yoga.YogaEdge;
 import org.jetbrains.annotations.UnknownNullability;
 import org.joml.*;
 
@@ -75,10 +75,23 @@ public class LDShaderHolder implements IConfigurable, INBTSerializable<CompoundT
         }
     }
 
+    @Nullable
+    public static LDShaderHolder createSafe(ResourceProvider resourceProvider, ResourceLocation location, VertexFormat format) {
+        try {
+            return create(resourceProvider, location, format);
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
     public static LDShaderHolder create(ResourceLocation location, VertexFormat format) throws Throwable {
+        return create(Minecraft.getInstance().getResourceManager(), location, format);
+    }
+
+    public static LDShaderHolder create(ResourceProvider resourceProvider, ResourceLocation location, VertexFormat format) throws Throwable {
         var currentId = SHADER_ID.get();
         var id = SHADER_UID_DEFINE.formatted(currentId);
-        var shaderInstance = LDShaderInstance.create(location, format, Set.of(id));
+        var shaderInstance = LDShaderInstance.create(resourceProvider, location, format, Set.of(id));
         if (shaderInstance == null) return null;
         // if successful, increment shader id
         SHADER_ID.getAndIncrement();
@@ -90,13 +103,17 @@ public class LDShaderHolder implements IConfigurable, INBTSerializable<CompoundT
     }
 
     public LDShaderInstance getShaderInstance(Collection<String> defines) {
+        return getShaderInstance(defines, Minecraft.getInstance().getResourceManager());
+    }
+
+    public LDShaderInstance getShaderInstance(Collection<String> defines, ResourceProvider resourceProvider) {
         if (defines.isEmpty()) return baseInstance;
         return shadersWithDefines.computeIfAbsent(defines.stream().collect(Collectors.toUnmodifiableSet()),
                 definesKey -> {
                     var defineWithUid = new LinkedHashSet<>(definesKey);
                     defineWithUid.addFirst(shaderUid);
                     try {
-                        var shader = LDShaderInstance.create(baseInstance.shaderLocation, baseInstance.getVertexFormat(), defineWithUid);
+                        var shader = LDShaderInstance.create(resourceProvider, baseInstance.shaderLocation, baseInstance.getVertexFormat(), defineWithUid);
                         if (shader == null) return baseInstance;
                         shader.setHolder(this);
                         // copy uniforms from the base instance

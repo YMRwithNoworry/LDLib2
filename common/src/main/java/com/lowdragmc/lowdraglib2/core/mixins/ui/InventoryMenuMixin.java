@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InventoryMenu.class)
 public abstract class InventoryMenuMixin {
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Inject(method = "<init>", remap = false, at = @At("RETURN"))
     private void ldlib2$onInit(Inventory playerInventory, boolean active, Player owner, CallbackInfo ci) {
         if (owner.level().isClientSide) {
             // Client-safe scheduling

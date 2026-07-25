@@ -31,7 +31,7 @@ public abstract class BlockEntityMixin {
     @Nullable
     public abstract Level getLevel();
 
-    @Inject(method = "getUpdateTag", at = @At(value = "RETURN"))
+    @Inject(method = "getUpdateTag", remap = false, at = @At(value = "RETURN"))
     private void injectGetUpdateTag(CallbackInfoReturnable<CompoundTag> cir) {
         if (this instanceof ISyncMangedHolder syncMangedHolder) {
             var tag = cir.getReturnValue();
@@ -39,14 +39,14 @@ public abstract class BlockEntityMixin {
         }
     }
 
-    @Inject(method = "saveAdditional", at = @At(value = "RETURN"))
+    @Inject(method = "saveAdditional", remap = false, at = @At(value = "RETURN"))
     private void injectSaveAdditional(CompoundTag pTag, CallbackInfo ci) {
         if (this instanceof IPersistManagedHolder persistManagedHolder) {
             persistManagedHolder.saveManagedPersistentData(ldlib2$registryAccess(), pTag, false);
         }
     }
 
-    @Inject(method = "load", at = @At(value = "RETURN"))
+    @Inject(method = "load", remap = false, at = @At(value = "RETURN"))
     private void injectLoad(CompoundTag pTag, CallbackInfo ci) {
         var provider = ldlib2$registryAccess();
         if (this instanceof ISyncMangedHolder syncMangedHolder && pTag.get(syncMangedHolder.getSyncTag()) instanceof CompoundTag tag) {
@@ -56,14 +56,14 @@ public abstract class BlockEntityMixin {
         }
     }
 
-    @Inject(method = "setRemoved", at = @At(value = "RETURN"))
+    @Inject(method = "setRemoved", remap = false, at = @At(value = "RETURN"))
     private void injectSetRemoved(CallbackInfo ci) {
         if (this instanceof ISyncPersistRPCBlockEntity syncMangedHolder && getLevel() instanceof ServerLevel) {
             syncMangedHolder.detachAsyncLogic();
         }
     }
 
-    @Inject(method = "clearRemoved", at = @At(value = "RETURN"))
+    @Inject(method = "clearRemoved", remap = false, at = @At(value = "RETURN"))
     private void injectClearRemoved(CallbackInfo ci) {
         if (this instanceof IManagedHolder managed) {
             managed.getRootStorage().requireInit();

@@ -1,32 +1,20 @@
 package com.lowdragmc.lowdraglib2.core.mixins;
 
 import com.lowdragmc.lowdraglib2.misc.IFluidHandlerModifiable;
-import com.lowdragmc.lowdraglib2.compat.FluidStack;
-import com.lowdragmc.lowdraglib2.compat.IFluidTank;
 import com.lowdragmc.lowdraglib2.compat.FluidTank;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
+/**
+ * Keeps the legacy {@code misc.IFluidHandlerModifiable} view available to consumers of the 1.21 API.
+ * The 1.20.1 compatibility FluidTank already implements the current handler directly, so this mixin
+ * must not shadow the removed NeoForge implementation methods.
+ */
 @Mixin(value = FluidTank.class, remap = false)
-public abstract class FluidTankMixin implements IFluidHandlerModifiable, IFluidTank {
-    @Shadow
-    protected FluidStack fluid;
-
-    @Shadow
-    protected abstract void onContentsChanged();
-    @Shadow
-    public abstract void setFluid(FluidStack fluid);
-
-    @Shadow
-    public abstract long fill(FluidStack resource, FluidAction action);
-
-    @Shadow
-    public abstract @NotNull FluidStack drain(int maxDrain, FluidAction action);
-
+public abstract class FluidTankMixin implements IFluidHandlerModifiable {
     @Override
-    public void setFluidInTank(int tank, FluidStack fluid) {
-        setFluid(fluid);
-        this.onContentsChanged();
+    public void setFluidInTank(int tank, com.lowdragmc.lowdraglib2.compat.FluidStack fluid) {
+        if (tank == 0) {
+            ((FluidTank) (Object) this).setFluid(fluid);
+        }
     }
 }

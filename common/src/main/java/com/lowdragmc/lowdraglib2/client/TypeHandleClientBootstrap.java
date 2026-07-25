@@ -14,6 +14,7 @@ public final class TypeHandleClientBootstrap {
     }
 
     public static void init() {
+        TypeHandleHelpers.setCustomIcon(TypeHandles.MISSING_PORT, Icons.ALERT.copy().setColor(0xFFFF3B30));
         TypeHandleHelpers.setCustomIcon(TypeHandles.BOOL, Icons.BOOL.copy().setColor(0xFF8c85ff));
         TypeHandleHelpers.setCustomIcon(TypeHandles.DOUBLE, Icons.FLOAT.copy().setColor(0xFF10B4C5));
         TypeHandleHelpers.setCustomIcon(TypeHandles.FLOAT, Icons.FLOAT.copy().setColor(0xFF10B4C5));

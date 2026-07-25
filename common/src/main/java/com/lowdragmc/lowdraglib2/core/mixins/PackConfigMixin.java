@@ -17,8 +17,8 @@ import java.util.List;
 @Mixin(WorldLoader.PackConfig.class)
 public abstract class PackConfigMixin {
 
-    @ModifyVariable(method = "createResourceManager",
-            at = @At(value = "INVOKE",
+    @ModifyVariable(method = "createResourceManager", remap = false,
+            at = @At(value = "INVOKE", remap = false,
                     target = "Lnet/minecraft/server/packs/resources/MultiPackResourceManager;<init>(Lnet/minecraft/server/packs/PackType;Ljava/util/List;)V",
                     shift = At.Shift.BEFORE,
                     by = 1

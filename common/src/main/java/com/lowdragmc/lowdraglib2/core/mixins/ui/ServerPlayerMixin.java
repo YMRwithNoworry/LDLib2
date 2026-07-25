@@ -13,7 +13,9 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class ServerPlayerMixin {
     @ModifyExpressionValue(
             method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;",
+            remap = false,
             at = @At(value = "INVOKE",
+                    remap = false,
                     target = "Lnet/minecraft/world/MenuProvider;createMenu(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/inventory/AbstractContainerMenu;"
             )
     )

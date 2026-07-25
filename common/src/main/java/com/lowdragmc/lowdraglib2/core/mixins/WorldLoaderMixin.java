@@ -14,14 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldLoader.class)
 public abstract class WorldLoaderMixin {
-    @Redirect(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/WorldLoader$PackConfig;createResourceManager()Lcom/mojang/datafixers/util/Pair;"))
+    @Redirect(method = "load", remap = false, at = @At(value = "INVOKE", remap = false, target = "Lnet/minecraft/server/WorldLoader$PackConfig;createResourceManager()Lcom/mojang/datafixers/util/Pair;"))
     private static Pair<WorldDataConfiguration, CloseableResourceManager> ldlib2$loadResourceManager(WorldLoader.PackConfig packConfig) {
         var pair = packConfig.createResourceManager();
         Platform.RESOURCE_MANAGER = pair.getSecond();
         return pair;
     }
 
-    @Inject(method = "method_42096", at = @At(value = "HEAD"))
+    @Inject(method = "method_42096", remap = false, at = @At(value = "HEAD"))
     private static void ldlib2$closeResourceManager(CloseableResourceManager closeableresourcemanager, ReloadableServerResources p_214370_, Throwable p_214371_, CallbackInfo ci) {
         Platform.RESOURCE_MANAGER = null;
     }

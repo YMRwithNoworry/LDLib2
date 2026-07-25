@@ -16,7 +16,7 @@ import java.util.concurrent.Executor;
 
 @Mixin(value = ReloadableServerResources.class, priority = 100)
 public abstract class ReloadableServerResourcesMixin {
-	@Inject(method = "loadResources", at = @At("HEAD"))
+	@Inject(method = "loadResources", remap = false, at = @At("HEAD"))
 	private static void ldlib2$captureEarlyRegistries(ResourceManager resourceManager, RegistryAccess.Frozen access,
                              FeatureFlagSet flags, Commands.CommandSelection commands, int functionCompilationLevel,
                              Executor gameExecutor, Executor backgroundExecutor,

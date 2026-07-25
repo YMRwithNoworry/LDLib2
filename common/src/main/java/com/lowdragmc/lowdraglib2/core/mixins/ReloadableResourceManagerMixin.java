@@ -17,7 +17,7 @@ import java.util.List;
 @Mixin(ReloadableResourceManager.class)
 public abstract class ReloadableResourceManagerMixin {
 
-    @ModifyVariable(method = "createReload", at = @At("HEAD"), index = 4, argsOnly = true)
+    @ModifyVariable(method = "createReload", remap = false, at = @At("HEAD"), index = 4, argsOnly = true)
     private List<PackResources> injectCreateReload(List<PackResources> resourcePacks) {
         var mutableList = new ArrayList<>(resourcePacks);
         mutableList.add(new CustomResourcePack(new File(Platform.getGamePath().toFile(), LDLib2.MOD_ID), LDLib2.MOD_ID, PackType.CLIENT_RESOURCES));

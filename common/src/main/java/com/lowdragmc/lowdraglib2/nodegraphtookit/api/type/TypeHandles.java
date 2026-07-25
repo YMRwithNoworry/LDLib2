@@ -50,6 +50,7 @@ public class TypeHandles {
     static {
         // Normal type handles
         MISSING_PORT = TypeHandleHelpers.fromType(MissingPort.class);
+        TypeHandleHelpers.setCustomColor(MISSING_PORT, 0xFFFF3B30);
         VOID = TypeHandleHelpers.fromType(Void.class);
         AUTOMATIC = TypeHandleHelpers.customType("AUTOMATIC", "Automatic");
         MISSING = TypeHandleHelpers.customType("MISSING_TYPE", null);

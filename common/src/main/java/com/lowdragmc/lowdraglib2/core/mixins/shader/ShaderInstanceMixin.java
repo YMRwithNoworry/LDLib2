@@ -34,33 +34,11 @@ public abstract class ShaderInstanceMixin implements ILDShaderInstance {
         }
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
-            require = 0,
-            at = @At("RETURN"))
-    public void ldlib2$onCreateShader(ResourceProvider resourceProvider,
-                                      ResourceLocation shaderLocation,
-                                      VertexFormat vertexFormat,
-                                      CallbackInfo ci) throws IOException {
-        if (ldlib2$shaderJson != null) {
-            this.onCreateShader(resourceProvider, shaderLocation, vertexFormat, ldlib2$shaderJson);
-            ldlib2$shaderJson = null;
-        }
-    }
-
     @ModifyExpressionValue(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
             require = 0,
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/util/GsonHelper;parse(Ljava/io/Reader;)Lcom/google/gson/JsonObject;"))
     private JsonObject ldlib2$captureShaderJson(JsonObject json) {
-        ldlib2$shaderJson = json;
-        return json;
-    }
-
-    @ModifyExpressionValue(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V",
-            require = 0,
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/util/GsonHelper;parse(Ljava/io/Reader;)Lcom/google/gson/JsonObject;"))
-    private JsonObject ldlib2$captureShaderJsonFromLocation(JsonObject json) {
         ldlib2$shaderJson = json;
         return json;
     }
@@ -74,5 +52,13 @@ public abstract class ShaderInstanceMixin implements ILDShaderInstance {
             var program = programType.getPrograms().get(LDProgramDefineManager.createProgramNameWithDefines(name));
             if (program != null) cir.setReturnValue(program);
         }
+    }
+
+    /** Prevent a no-define cache hit from bypassing the active define set. */
+    @ModifyExpressionValue(method = "getOrCreate", at = @At(
+            value = "INVOKE",
+            target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"))
+    private static Object ldlib2$skipPlainCacheWhenDefinesActive(Object original) {
+        return LDProgramDefineManager.hasProgramDefines() ? null : original;
     }
 }

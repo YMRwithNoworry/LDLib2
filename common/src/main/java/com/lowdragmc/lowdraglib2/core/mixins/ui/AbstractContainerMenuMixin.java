@@ -44,7 +44,7 @@ public abstract class AbstractContainerMenuMixin implements IModularUIHolderMenu
         modularUI.setMenu((AbstractContainerMenu)(Object)this);
     }
 
-    @Inject(method = "broadcastChanges", at = @At(value = "RETURN"))
+    @Inject(method = "broadcastChanges", remap = false, at = @At(value = "RETURN"))
     private void ldlib2$broadcastChanges(CallbackInfo ci) {
         var mui = getModularUI();
         if (mui != null) {

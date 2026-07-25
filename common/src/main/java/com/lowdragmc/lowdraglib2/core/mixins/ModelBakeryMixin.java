@@ -29,7 +29,7 @@ public abstract class ModelBakeryMixin {
     private java.util.Map<ResourceLocation, UnbakedModel> topLevelModels;
 
     @WrapOperation(method = "getModel",
-              at = @At(value = "INVOKE",
+              at = @At(value = "INVOKE", remap = false,
                        target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V"))
     protected void injectStateToModelLocation(Logger instance, String s, Object[] objects, Operation<Void> original) {
         ResourceLocation id = objects[0] instanceof ResourceLocation rl ? rl : null;
